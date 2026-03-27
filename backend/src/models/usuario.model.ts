@@ -9,7 +9,7 @@ export class Usuario extends Entity {
   @property({
     type: 'string',
     id: true,
-    generated: true,
+    defaultFn: 'uuidv4',
   })
   id_usuario?: string;
 

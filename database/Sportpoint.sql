@@ -4,7 +4,7 @@
  use sportpoint_db;
  
 CREATE TABLE usuario (
-    id_usuario VARCHAR(50) NOT NULL,
+    id_usuario VARCHAR(36) NOT NULL,
     correo VARCHAR(50) NOT NULL,
     edad INT NOT NULL,
     sexo CHAR NOT NULL,

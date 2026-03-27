@@ -5,10 +5,10 @@ const config = {
   name: 'Sportpoint',
   connector: 'mysql',
   url: '',
-  host: 'localhost',
+  host: '127.0.0.1',
   port: 3306,
   user: 'root',
-  password: '2468',
+  password: '1807191170@ros4nne95',
   database: 'sportpoint_db'
 };
 
@@ -19,11 +19,11 @@ const config = {
 @lifeCycleObserver('datasource')
 export class SportpointDataSource extends juggler.DataSource
   implements LifeCycleObserver {
-  static dataSourceName = 'sportpoint_db';
+  static dataSourceName = 'Sportpoint';
   static readonly defaultConfig = config;
 
   constructor(
-    @inject('datasources.config.sportpoint_db', {optional: true})
+    @inject('datasources.config.Sportpoint', {optional: true})
     dsConfig: object = config,
   ) {
     super(dsConfig);

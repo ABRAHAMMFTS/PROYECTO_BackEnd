@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SportPoint</title>
+
+  <link rel="icon" href="assets\img\favicon.ico" type="image/png">
+
+<!-- google fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <img src="assets/img/logo_color_lineal.svg" alt="Logo" height="70">
+    <nav>
+        <ul>
+            <li><a href="#Inicio">Inicio</a></li>
+            <li><a href="#Eventos">Eventos</a></li>
+            <li><a href="#Equipos">Equipos</a></li>
+            <li><a href="#Espacios">Espacios</a></li>
+            <li><a href="#Perfil">Mi Perfil</a></li>
+        </ul>
+    </nav>
+    <div class="button-container">
+        <button id="showformLogin"> Iniciar Sesión </button>
+        <button id="showformSignup"> Crear Cuenta </button>
+    </div>
+  </header>
+
+  <!-- Pagina principal -->
+  <main>
+  </main>
+
+  <!-- Crear cuenta -->
+  <div class="signup-container" id="signup-container">
+    <div id="signupFormContainer" style="display: none;" class="signupForm-container">
+        <div class="board">
+            <div class="board-back">
+                <div class="board-details">
+                    <h3>Únete ya</h3>
+                    <h1>Crea una <br>cuenta</h1>
+                    <p>Se parte de toda la experiencia deportiva en Bolívar</p>
+                    <div class="img-signup"></div>
+                </div>
+            </div>
+        </div>
+        <!-- Signup ingresos -->
+        <div class="centersignform">
+            <form id="signupForm">
+                <h2>Empecemos</h2>
+                <p class="loginredirectlink">¿Ya tienes una cuenta? <a href="#" id="showformLoginLink">Iniciar Sesión</a></p>
+                <!-- nombre -->
+                <div class="field-group">
+                    <label for="name" id="lablemargin">Nombre</label>
+                    <input type="text" id="name" placeholder="Ingrese su nombre completo" required>
+                </div>
+
+                <div class="signflhorizontal">
+                    <!-- edad -->
+                    <div class="field-group">
+                        <label for="age" id="lablemargin">Edad</label>
+                        <input type="number" id="age" min="5" max="100" placeholder="Ingrese su edad" required>
+                    </div>
+                    <!-- sexo -->
+                    <div class="field-group">
+                        <label for="sexo" class="lablemargin">Sexo</label>
+                        <select type="sex" id="sexo" name="sexo" placeholder="Ingrese su edad" placeholder="Selecciona tu Sexo" required>
+                            <option value=""> Selecciona tu sexo </option>
+                                <option value="femenino">Femenino</option>
+                                <option value="masculino">Masculino</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field-group">
+                <!-- municipio -->
+                    <label for="municipio" class="lablemargin">Municipio</label>
+                    <select type="mun" id="municipio" name="municipio" required>
+                        <option value=""> Selecciona tu municipio </option>
+                            <option value="achi">Achí</option>
+                            <option value="altosrosario">Altos del Rosario</option>
+                            <option value="arenal">Arenal</option>
+                            <option value="arjona">Arjona</option>
+                            <option value="arroyohondo">Arroyohondo</option>
+                            <option value="barrancoloba">Barranco de Loba</option>
+                            <option value="bocachica">Bocachica</option>
+                            <option value="calamar">Calamar</option>
+                            <option value="cantagallo">Cantagallo</option>
+                            <option value="cartagena">Cartagena</option>
+                            <option value="cicuco">Cicuco</option>
+                            <option value="clemencia">Clemencia</option>
+                            <option value="cordoba">Córdoba</option>
+                            <option value="carmen">El Carmen de Bolívar</option>
+                            <option value="elpenon">El Peñón</option>
+                            <option value="hatilloloba">Hatillo de Loba</option>
+                            <option value="magangue">Magangué</option>
+                            <option value="margarita">Margarita</option>
+                            <option value="marialbaja">María la Baja</option>
+                            <option value="mompox">Mompox</option>  
+                            <option value="montecristo">Montecristo</option>
+                            <option value="morales">Morales</option>
+                            <option value="norosí">Norosí</option>
+                            <option value="pinillos">Pinillos</option>
+                            <option value="regidor">Regidor</option>
+                            <option value="rioviejo">Rio Viejo</option>
+                            <option value="sancristobal">San Cristóbal</option>
+                            <option value="sanestanislao">San Estanislao</option>
+                            <option value="sanfer">San Fernando</option>
+                            <option value="sanja">San Jacinto</option>
+                            <option value="sanjuannepo">San Juan Nepomuceno</option>
+                            <option value="sanmartinloba">San Martín de Loba</option>
+                            <option value="sanpablo">San Pablo</option>
+                            <option value="santacatalina">Santa Catalina</option>
+                            <option value="santarosalima">Santa Rosa de Lima</option>
+                            <option value="santarosanorte">Santa Rosa del Norte</option>
+                            <option value="simiti">Simití</option>
+                            <option value="soplaviento">Soplaviento</option>
+                            <option value="talaigua">Talaigua Nuevo</option>
+                            <option value="tiquisio">Tiquisio</option>
+                            <option value="turbaco">Turbaco</option>
+                            <option value="turbana">Turbaná</option>
+                            <option value="villanueva">Villanueva</option>
+                            <option value="zambrano">Zambrano</option>
+                    </select>
+                </div>
+                <!-- telefono -->  
+                <div class="field-group">
+                    <label for="tel" id="lablemargin">Teléfono</label>
+                    <input type="tel" id="tel" placeholder="Ingrese su número de teléfono" required>
+                </div>
+                <div class="signflhorizontal">
+                    <!-- correo -->
+                    <div class="field-group">
+                        <label for="email" id="lablemargin">Email</label>
+                        <input type="email" id="email" placeholder="Ingrese su email" required>
+                    </div>
+                    <!-- contraseña -->
+                    <div class="field-group">
+                        <label for="contrasena" id="lablemargin">Contraseña</label>
+                        <input type="password" id="contrasena" placeholder="Ingrese su contraseña" required>
+                    </div>
+                </div>
+                <div>
+                    <button type="submit">Crear Cuenta</button>
+                </div>
+            </form>
+        </div>
+        </div>
+        <div class="cut-button" id="signupCutButton">&#10005;</div>
+    </div>
+  </div>
+
+  <div class="login-container" id="login-container">
+    <div id="loginFormContainer" style="display: none;" class="loginForm-container">
+
+    </div>
+  </div>
+  
+  <script src="script.js">
+  </script>
+</body>
+</html>
+
+<!-- agregar rol en el crear cuenta -->

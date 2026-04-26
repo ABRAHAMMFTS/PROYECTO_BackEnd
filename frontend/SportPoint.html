@@ -10,20 +10,24 @@
 <!-- google fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playwrite+IE:wght@100..400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Borel&display=swap" rel="stylesheet">
 
   <!-- CSS -->
   <link rel="stylesheet" href="style.css">
+
+  <!-- lottie -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@lottiefiles/dotlottie-wc@0.3.0/dist/dotlottie-wc.js"></script>
 </head>
 <body>
 
   <header>
-    <img src="assets/img/logo_color_lineal.svg" alt="Logo" height="70">
+    <img src="../assets/img/logoredondocolor.png" alt="Logo" height="80">
     <nav>
         <ul>
             <li><a href="#Inicio">Inicio</a></li>
             <li><a href="#Eventos">Eventos</a></li>
-            <li><a href="#Equipos">Equipos</a></li>
             <li><a href="#Espacios">Espacios</a></li>
             <li><a href="#Perfil">Mi Perfil</a></li>
         </ul>
@@ -36,7 +40,251 @@
 
   <!-- Pagina principal -->
   <main>
+    <section id="Inicio">
+      <div class="hero">
+        <div class="carousel">
+          <div class="carousel-track">
+            <img class="carousel-slide" src="../assets/photos/paralimpicos_yamil.jpg">
+            <img class="carousel-slide" src="../assets/photos/niños_aerobicos.jpg">
+            <img class="carousel-slide" src="../assets/photos/patinadores_montemaria.jpg">
+          </div>
+          <div class="carousel-dots">
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+        </div>
+        <div class="hero-text">
+          <h1>El deporte de <span class="font-borel">Bolívar</span></h1>
+          <p>Encuentra eventos, equipos y espacios deportivos cerca de ti </p>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat-card">
+            <h2 id="stat-eventos"></h2>
+            <p><a href="#Eventos">Eventos <br><span class="font-borel-lil">activos</span></a></p>
+        </div>
+        <div class="stat-card">
+            <h2 id="stat-espacios"></h2>
+            <p><a href="#Espacios">Espacios <br><span class="font-borel-lil">disponibles</span></a></p>
+        </div>
+        <div class="stat-card">
+            <h2 id="stat-municipios"></h2>
+            <p>Municipios <br><span class="font-borel-lil">cubiertos</span></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="Eventos">
+      <div class="eventos-section">
+        <div class="section-header">
+          <button class="filtrar-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="9" y1="18" x2="15" y2="18"/>
+            </svg>
+            Filtrar
+          </button>
+        </div>
+      
+        <div class="fila">
+          <div class="fila-header">
+            <span class="fila-titulo cerca">Eventos cerca de ti</span>
+            <button class="ver-mas">Ver más →</button>
+          </div>
+          <div class="carrusel-wrap">
+            <button class="scroll-btn left" onclick="scroll(this,-1)">‹</button>
+            <div class="carrusel" id="c1"></div>
+            <button class="scroll-btn right" onclick="scroll(this,1)">›</button>
+          </div>
+        </div>
+      
+        <div class="fila">
+          <div class="fila-header">
+            <span class="fila-titulo proximo">Eventos próximos</span>
+            <button class="ver-mas">Ver más →</button>
+          </div>
+          <div class="carrusel-wrap">
+            <button class="scroll-btn left" onclick="scroll(this,-1)">‹</button>
+            <div class="carrusel" id="c2"></div>
+            <button class="scroll-btn right" onclick="scroll(this,1)">›</button>
+          </div>
+        </div>
+            <button class="scroll-btn right" onclick="scroll(this,1)">›</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="overlay" id="overlay" onclick="cerrarModal(event)">
+        <button class="modal-close" onclick="cerrarOverlay()">✕</button>
+        <div class="modal" id="modal">
+          <div class="modal-img" id="modal-img"></div>
+          <div class="modal-body">
+            <div class="modal-titulo" id="modal-titulo"></div>
+            <div class="modal-meta" id="modal-meta"></div>
+            <div class="modal-desc" id="modal-desc"></div>
+            <div class="modal-tags" id="modal-tags"></div>
+            <div class="modal-actions">
+              <button class="btn-primary">Reservar cupo</button>
+              <button class="btn-secondary">Guardar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="Espacios">
+      <div class="hero-img">
+        <img src="../assets/img/buscadorinst.png" alt="Instalaciones">
+      </div>
+      
+      <div class="buscador-wrap">
+        <div class="buscador-bar" onclick="toggleFiltros()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-text-tertiary);flex-shrink:0">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" placeholder="Buscar instalación" id="buscador-input" onclick="event.stopPropagation(); abrirFiltros()" readonly>
+          <svg id="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-text-tertiary);flex-shrink:0;transition:transform 0.2s">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </div>
+    
+        <div class="filtros-panel" id="filtros-panel">
+          <div class="filtros-grid">
+        
+            <div class="filtro-grupo">
+              <div class="filtro-titulo">Zona</div>
+              <div class="check-item"><input type="checkbox" id="z1" data-tag="ZNTE01" onchange="actualizarTags(this)"><label for="z1">Norte - Centro y Getsemaní</label></div>
+              <div class="check-item"><input type="checkbox" id="z2" data-tag="ZNTE02" onchange="actualizarTags(this)"><label for="z2">Norte - Residencial</label></div>
+              <div class="check-item"><input type="checkbox" id="z3" data-tag="ZNTE03" onchange="actualizarTags(this)"><label for="z3">Nueva Zona Norte</label></div>
+              <div class="check-item"><input type="checkbox" id="z4" data-tag="ZCTO01" onchange="actualizarTags(this)"><label for="z4">Península Turística</label></div>
+              <div class="check-item"><input type="checkbox" id="z5" data-tag="ZCTO02" onchange="actualizarTags(this)"><label for="z5">Residencial Central-Sur</label></div>
+              <div class="check-item"><input type="checkbox" id="z6" data-tag="ZSUR01" onchange="actualizarTags(this)"><label for="z6">Suroriente y Suroccidente</label></div>
+              <div class="check-item"><input type="checkbox" id="z7" data-tag="ZSUR02" onchange="actualizarTags(this)"><label for="z7">Extremo Sur (Industrial)</label></div>
+            </div>
+        
+            <div class="filtro-grupo">
+              <div class="filtro-titulo">Municipio</div>
+              <div class="check-item"><input type="checkbox" id="m1" data-tag="Cartagena" onchange="actualizarTags(this)"><label for="m1">Cartagena</label></div>
+              <div class="check-item"><input type="checkbox" id="m2" data-tag="Carmendebolivar" onchange="actualizarTags(this)"><label for="m2">Carmen de Bolívar</label></div>
+              <div class="check-item"><input type="checkbox" id="m3" data-tag="Sanjuannepo" onchange="actualizarTags(this)"><label for="m3">San Juan Nepomuceno</label></div>
+              <div class="check-item"><input type="checkbox" id="m4" data-tag="Arjona" onchange="actualizarTags(this)"><label for="m4">Arjona</label></div>
+              <div class="check-item"><input type="checkbox" id="m5" data-tag="Turbaco" onchange="actualizarTags(this)"><label for="m5">Turbaco</label></div>
+              <div class="check-item"><input type="checkbox" id="m6" data-tag="Mompox" onchange="actualizarTags(this)"><label for="m6">Mompox</label></div>
+              <div class="check-item"><input type="checkbox" id="m7" data-tag="Magangué" onchange="actualizarTags(this)"><label for="m7">Magangué</label></div>
+            </div>
+        
+            <div class="filtro-grupo">
+              <div class="filtro-titulo">Deporte</div>
+              <div class="check-item"><input type="checkbox" id="d1" data-tag="Fútbol" onchange="actualizarTags(this)"><label for="d1">Fútbol</label></div>
+              <div class="check-item"><input type="checkbox" id="d2" data-tag="Baloncesto" onchange="actualizarTags(this)"><label for="d2">Basketball</label></div>
+              <div class="check-item"><input type="checkbox" id="d3" data-tag="Natación" onchange="actualizarTags(this)"><label for="d3">Natación</label></div>
+              <div class="check-item"><input type="checkbox" id="d4" data-tag="Tenis" onchange="actualizarTags(this)"><label for="d4">Tenis</label></div>
+              <div class="check-item"><input type="checkbox" id="d5" data-tag="Boxeo" onchange="actualizarTags(this)"><label for="d5">Boxeo</label></div>
+              <div class="check-item"><input type="checkbox" id="d6" data-tag="Halterofilia" onchange="actualizarTags(this)"><label for="d6">Halterofilia</label></div>
+              <div class="check-item"><input type="checkbox" id="d7" data-tag="Running" onchange="actualizarTags(this)"><label for="d7">Atletismo</label></div>
+              <div class="check-item"><input type="checkbox" id="d8" data-tag="Calistenia" onchange="actualizarTags(this)"><label for="d8">Calistenia</label></div>
+              <div class="check-item"><input type="checkbox" id="d9" data-tag="Ciclismo" onchange="actualizarTags(this)"><label for="d9">Ciclismo</label></div>
+              <div class="check-item"><input type="checkbox" id="d10" data-tag="Softbol" onchange="actualizarTags(this)"><label for="d10">Softbol</label></div>
+              <div class="check-item"><input type="checkbox" id="d11" data-tag="Voleibol" onchange="actualizarTags(this)"><label for="d11">Voleibol</label></div>
+            </div>
+        
+            <div class="filtro-grupo">
+              <div class="filtro-titulo">Acceso</div>
+              <div class="check-item"><input type="checkbox" id="a1" data-tag="Público" onchange="actualizarTags(this)"><label for="a1">Público</label></div>
+              <div class="check-item"><input type="checkbox" id="a2" data-tag="Privado" onchange="actualizarTags(this)"><label for="a2">Privado</label></div>
+            </div>
+        
+          </div>
+          <div class="filtros-footer">
+            <button class="btn-limpiar" onclick="limpiar()">Limpiar filtros</button>
+            <button class="btn-buscar" onclick="buscar()">Buscar</button>
+          </div>
+        </div>
+      </div>
+      <div class="tags-activos" id="tags-activos"></div>
+    </section>
+
+    <section id="Perfil">
+      <div class="perfil-page">
+      <div class="col-izq">
+        <div class="perfil-header">
+          <div class="avatar-wrap">
+            <div class="avatar">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+              </svg>
+            </div>
+            <button class="cambiar-foto-btn">Cambiar Foto</button>
+          </div>
+      
+          <div class="perfil-info">
+            <div class="username">@<span class="db-field" data-field="username">nombre_usuario</span></div>
+      
+            <div class="meta-row">
+              <span class="db-field" data-field="municipio">Municipio</span>
+              <span>,</span>
+              <span>Colombia</span>
+            </div>
+      
+            <div class="meta-row">
+              <span class="db-field" data-field="edad">18</span>
+              <span>años</span>
+              <span class="db-field" data-field="genero">♀</span>
+            </div>
+          </div>
+        </div>
+      
+        <div class="section-grid">
+      
+          <div>
+            <div class="section-label">Redes sociales</div>
+            <div class="social-icons" id="social-container">
+              <a href="#" class="social-link" data-field="instagram_url">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="2" y="2" width="20" height="20" rx="5"/>
+                  <circle cx="12" cy="12" r="5"/>
+                  <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
+                </svg>
+                Instagram
+              </a>
+            </div>
+            <div class="social-icons" id="social-container">
+              <a href="#" class="social-link" data-field="tiktok_url">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/>
+                </svg>
+                TikTok
+              </a>
+            </div>
+          </div>
+        </div>
+      
+        <button class="editar-btn">Editar Perfil</button>
+      </div>
+      <div class="col-der">
+        <div class="tabs">
+          <button class="tab active">Mis Reservas</button>
+          <button class="tab">Mis Eventos</button>
+          <button class="tab">Mis Favoritos</button>
+        </div>
+        <div class="tab-content" id="tab-content">Aquí irá el contenido de Mis Reservas...</div>
+      </div>
+    </div>
+  </div>
+    </section>
   </main>
+  <footer class="main-footer">
+    <div class="footer-left">
+      <img src="../assets/img/logoredondoblanco.png" alt="Logo Blanco" class="footer-img-one">
+      <p>© 2026 Todos los derechos reservados · Proyecto Talento TECH</p>
+    </div>
+    
+    <div class="footer-right">
+      <p>MinTIC</p>
+      <img src="../assets/img/mintic_logo.svg" alt="MinTIC" class="footer-img-two">
+    </div>
+  </footer>
 
   <!-- Crear cuenta -->
   <div class="signup-container" id="signup-container">
@@ -47,7 +295,14 @@
                     <h3>Únete ya</h3>
                     <h1>Crea una <br>cuenta</h1>
                     <p>Se parte de toda la experiencia deportiva en Bolívar</p>
-                    <div class="img-signup"></div>
+                    <div class="img-signup">
+                      <dotlottie-wc
+                        src="../../assets/media/player.lottie"
+                        style="width: auto; height: 130px;"
+                        loop
+                        autoplay>
+                      </dotlottie-wc>
+                    </div>
                 </div>
             </div>
         </div>
@@ -58,8 +313,8 @@
                 <p class="loginredirectlink">¿Ya tienes una cuenta? <a href="#" id="showformLoginLink">Iniciar Sesión</a></p>
                 <!-- nombre -->
                 <div class="field-group">
-                    <label for="name" id="lablemargin">Nombre</label>
-                    <input type="text" id="name" placeholder="Ingrese su nombre completo" required>
+                    <label for="name" id="lablemargin">Nombre de Usuario</label>
+                    <input type="text" id="name" placeholder="Ingrese su nombre de usuario" required>
                 </div>
 
                 <div class="signflhorizontal">
@@ -143,7 +398,10 @@
                     <!-- contraseña -->
                     <div class="field-group">
                         <label for="contrasena" id="lablemargin">Contraseña</label>
-                        <input type="password" id="contrasena" placeholder="Ingrese su contraseña" required>
+                        <div class="input-eye-wrapper">
+                          <input type="password" id="contrasena" placeholder="Ingrese su contraseña" required>
+                          <span class="toggle-eye" data-target="contrasena">👁️</span>
+                      </div>
                     </div>
                 </div>
                 <div>
@@ -158,13 +416,60 @@
 
   <div class="login-container" id="login-container">
     <div id="loginFormContainer" style="display: none;" class="loginForm-container">
-
-    </div>
-  </div>
+      
+      <!-- Panel izquierdo (board) -->
+      <div class="board">
+        <div class="board-back board-back--login">
+          <div class="board-details">
+            <h3>¡Regresaste!</h3>
+            <h1>Es bueno verte nuevamente</h1>
+            <p>Inicia Sesión para recuperar tu cuenta</p>
+            <dotlottie-wc
+              src="../../assets/media/Soccer_Ball.lottie"
+              style="width: 100px; height: 100px;"
+              loop
+              autoplay>
+            </dotlottie-wc>
+          </div>
+        </div>
+      </div>
   
+      <!-- Formulario derecho -->
+      <div class="centersignform">
+        <form id="loginForm">
+          <h2>¡Hola de nuevo!</h2>
+          <p class="loginredirectlink">
+            ¿No tienes cuenta? 
+            <a href="#" id="showformSignupLink">Crear Cuenta</a>
+          </p>
+          <div class="img-signup">
+          </div>
+  
+          <!-- Email -->
+          <div class="field-group">
+            <label for="login-email">Email</label>
+            <input type="email" id="login-email" placeholder="Ingrese su email" required>
+          </div>
+  
+          <!-- Contraseña -->
+          <div class="field-group">
+            <label for="login-password">Contraseña</label>
+            <div class="input-eye-wrapper">
+              <input type="password" id="login-password" placeholder="Ingrese su contraseña" required>
+              <span class="toggle-eye" data-target="login-password">👁️</span>
+            </div>
+          </div>
+  
+          <div>
+            <button type="submit">Iniciar Sesión</button>
+          </div>
+        </form>
+      </div>
+  
+    </div>
+    <div class="cut-button" id="loginCutButton">&#10005;</div>
+  </div>  
   <script src="script.js">
   </script>
 </body>
 </html>
-
-<!-- agregar rol en el crear cuenta -->

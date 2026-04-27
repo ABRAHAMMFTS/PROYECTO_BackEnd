@@ -1,4 +1,4 @@
-﻿:root {
+:root {
     --white: #FFFCE5;
     --red: #dd0000;
     --reddark: #7d0101;
@@ -919,7 +919,7 @@ select {
 
 .scroll-btn {
   position: absolute; top: 50%; 
-  transform: scale(1.5px);
+  transform: scale(1.2);
   width: 32px; height: 32px; border-radius: 50%;
   background: var(--color-background-primary);
   display: flex; align-items: center; justify-content: center;

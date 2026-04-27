@@ -108,7 +108,7 @@ export class App implements OnInit, OnDestroy {
     if (this.showLogin()) this.showLogin.set(false);
   }
 
-  // Cargar eventos desde API con fallback de ejemplo
+  // Cargar eventos desde API con fallback de ejemplo (12 eventos como en el original)
   private cargarEventos() {
     this.apiService.getEventos().subscribe({
       next: (data: Evento[]) => {
@@ -124,17 +124,28 @@ export class App implements OnInit, OnDestroy {
       },
       error: () => {
         setTimeout(() => {
-          this.eventosCercanos.set([
-            { id: 1, nombre: 'Torneo Barrial', descripcion: 'Liga local de fútbol con partidos en el estadio municipal.', deporte: 'Fútbol', fecha: '2026-05-10', hora: '16:00', municipio: 'Cartagena' },
-            { id: 2, nombre: 'Nado Libre', descripcion: 'Competencia de natación en piscina olímpica para todas las edades.', deporte: 'Natación', fecha: '2026-05-15', hora: '10:00', municipio: 'Cartagena' },
-            { id: 3, nombre: 'Basket 3x3', descripcion: 'Torneo callejero de baloncesto en la plaza central.', deporte: 'Baloncesto', fecha: '2026-05-18', hora: '09:00', municipio: 'Cartagena' },
-            { id: 4, nombre: 'Ciclismo Urbano', descripcion: 'Recorrido ciclístico por las rutas del barrio histórico.', deporte: 'Ciclismo', fecha: '2026-05-20', hora: '07:00', municipio: 'Cartagena' },
-          ]);
-          this.eventosProximos.set([
-            { id: 5, nombre: 'Maratón Bolívar', descripcion: 'Carrera atlética de 10km por el centro histórico de Cartagena.', deporte: 'Running', fecha: '2026-06-01', hora: '06:00', municipio: 'Cartagena' },
-            { id: 6, nombre: 'Torneo de Voleibol', descripcion: 'Campeonato municipal de voleibol playa en las canchas del litoral.', deporte: 'Voleibol', fecha: '2026-06-05', hora: '08:00', municipio: 'Turbaco' },
-            { id: 7, nombre: 'Boxeo Aficionado', descripcion: 'Velada de boxeo aficionado con categorías juvenil y senior.', deporte: 'Boxeo', fecha: '2026-06-10', hora: '18:00', municipio: 'Arjona' },
-          ]);
+          const fallbackData: Evento[] = [
+            { id: 1, nombre: "Torneo Barrial", descripcion: "Liga local de fútbol en fase eliminatoria.", deporte: "Fútbol", fecha: "2026-05-10", hora: "16:00", municipio: "Cartagena" },
+            { id: 2, nombre: "Basketball Cup", descripcion: "Campeonato juvenil categoría 14-18 años.", deporte: "Baloncesto", fecha: "2026-05-12", hora: "18:00", municipio: "Cartagena" },
+            { id: 3, nombre: "Nado Libre", descripcion: "Competencia en piscina olímpica.", deporte: "Natación", fecha: "2026-05-15", hora: "10:00", municipio: "Cartagena" },
+            { id: 4, nombre: "Torneo Universitario", descripcion: "UTB vs UDC - Gran Final.", deporte: "Softbol", fecha: "2026-04-28", hora: "16:00", municipio: "Cartagena" },
+            { id: 5, nombre: "Femenina Bolivarense", descripcion: "Selecciones Sub-20 en competencia.", deporte: "Voleibol", fecha: "2026-05-01", hora: "08:00", municipio: "Cartagena" },
+            { id: 6, nombre: "Amateur Peso Pluma", descripcion: "Velada de boxeo aficionado.", deporte: "Boxeo", fecha: "2026-05-04", hora: "18:00", municipio: "Cartagena" },
+            { id: 7, nombre: "Carrera 10K", descripcion: "Running urbano por las calles del municipio.", deporte: "Running", fecha: "2026-05-20", hora: "06:00", municipio: "Turbaco" },
+            { id: 8, nombre: "Copa Tenis", descripcion: "Torneo abierto nivel aficionado.", deporte: "Tenis", fecha: "2026-05-18", hora: "09:00", municipio: "Cartagena" },
+            { id: 9, nombre: "Ciclismo Ruta", descripcion: "Competencia regional de ruta.", deporte: "Ciclismo", fecha: "2026-05-25", hora: "07:00", municipio: "Turbaco" },
+            { id: 10, nombre: "Calistenia Park", descripcion: "Exhibición urbana y competencia.", deporte: "Calistenia", fecha: "2026-05-22", hora: "17:00", municipio: "Cartagena" },
+            { id: 11, nombre: "Halterofilia Open", descripcion: "Competencia de fuerza máxima.", deporte: "Halterofilia", fecha: "2026-05-28", hora: "15:00", municipio: "Cartagena" },
+            { id: 12, nombre: "Boxeo Amateur", descripcion: "Velada deportiva comunitaria.", deporte: "Boxeo", fecha: "2026-05-30", hora: "19:00", municipio: "Magangue" }
+          ];
+
+          this.eventosCercanos.set(fallbackData.filter(ev => ev.municipio === 'Cartagena'));
+          
+          const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+          this.eventosProximos.set(
+            fallbackData.filter(ev => new Date(ev.fecha) >= hoy)
+                .sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime())
+          );
           this.cdr.detectChanges();
         });
       }
@@ -177,7 +188,6 @@ export class App implements OnInit, OnDestroy {
   buscar()  { this.filtrosAbiertos.set(false); }
 
   // Perfil
-  activeTab$ = signal('Reservas');
   changeTab(tab: string) { this.activeTab.set(tab); }
 
   perfilUsuario = signal({
@@ -194,10 +204,10 @@ export class App implements OnInit, OnDestroy {
   crearCuenta(event: Event) { event.preventDefault(); console.log('Crear cuenta'); }
   iniciarSesion(event: Event) { event.preventDefault(); console.log('Iniciar sesión'); }
 
-  // Scroll del carrusel de eventos
+  // Scroll del carrusel de eventos (igual al original con factor 200)
   scrollCarrusel(elementId: string, direction: number) {
     const el = document.getElementById(elementId);
-    if (el) el.scrollBy({ left: direction * 320, behavior: 'smooth' });
+    if (el) el.scrollBy({ left: direction * 200, behavior: 'smooth' });
   }
 
   // Filtros

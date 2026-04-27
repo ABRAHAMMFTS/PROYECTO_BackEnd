@@ -1,7 +1,9 @@
 <!-- Plantilla principal de la aplicación Angular. Aquí se define la estructura de la página. -->
 <div class="app-root">
+  <!-- Encabezado fijo con logo y navegación principal -->
   <header>
     <img src="assets/img/logoredondocolor.png" alt="Logo SportPoint" height="80" />
+    <!-- Menú de navegación con enlaces a las secciones principales -->
     <nav>
       <ul>
         <li><a href="#" (click)="changeSection('Inicio'); $event.preventDefault()" [class.active]="activeSection() === 'Inicio'">Inicio</a></li>
@@ -10,15 +12,19 @@
         <li><a href="#" (click)="changeSection('Perfil'); $event.preventDefault()" [class.active]="activeSection() === 'Perfil'">Mi Perfil</a></li>
       </ul>
     </nav>
+    <!-- Botones de autenticación en la esquina superior derecha -->
     <div class="button-container">
-      <button type="button" (click)="toggleLogin()">Iniciar Sesi�n</button>
+      <button type="button" (click)="toggleLogin()">Iniciar Sesión</button>
       <button type="button" (click)="toggleSignup()">Crear Cuenta</button>
     </div>
   </header>
 
+  <!-- Contenido principal que cambia según la sección activa -->
   <main>
+    <!-- Sección de Inicio con carrusel y estadísticas -->
     <section *ngIf="activeSection() === 'Inicio'" class="section">
       <div class="hero">
+        <!-- Carrusel de imágenes con controles de navegación -->
         <div class="carousel">
           <img [src]="slides()[currentSlide()]" alt="Slide principal" class="carousel-slide" />
           <div class="carousel-controls">
@@ -35,6 +41,7 @@
         </div>
       </div>
 
+      <!-- Tarjetas de estadísticas que muestran resumen del sistema -->
       <div class="stats">
         <div class="stat-card">
           <h2>{{ stats().eventos }}</h2>
@@ -51,12 +58,14 @@
       </div>
     </section>
 
+    <!-- Sección de Eventos con carrusel de tarjetas -->
     <section *ngIf="activeSection() === 'Eventos'" class="section">
       <div class="section-header">
         <h2>Eventos</h2>
         <button type="button" class="filtrar-btn" (click)="toggleFiltros()">Filtrar</button>
       </div>
 
+      <!-- Lista de eventos obtenidos desde la API del backend -->
       <div class="event-list">
         <article class="event-card" *ngFor="let evento of eventos()">
           <img [src]="evento.imagen" alt="{{ evento.nombre }}" />
@@ -73,8 +82,10 @@
       </div>
     </section>
 
+    <!-- Sección de Espacios con buscador y filtros -->
     <section *ngIf="activeSection() === 'Espacios'" class="section espacio-section">
       <h2>Espacios</h2>
+      <!-- Buscador para filtrar instalaciones deportivas -->
       <div class="buscador-wrap">
         <input class="search-input" [(ngModel)]="buscadorTexto" placeholder="Buscar instalaci�n" />
         <button type="button" class="btn-buscar" (click)="buscar()">Buscar</button>
@@ -84,11 +95,13 @@
       </div>
     </section>
 
+    <!-- Sección de Perfil del usuario (placeholder para futuro desarrollo) -->
     <section *ngIf="activeSection() === 'Perfil'" class="section perfil-section">
       <h2>Mi Perfil</h2>
-      <p>Aqu� se mostrar� el perfil del usuario.</p>
+      <p>Aquí se mostrará el perfil del usuario.</p>
     </section>
 
+    <!-- Modal overlay para mostrar detalles del evento seleccionado -->
     <div class="overlay" *ngIf="modalOpen()" (click)="closeModal()">
       <div class="modal" (click)="$event.stopPropagation()">
         <button type="button" class="modal-close" (click)="closeModal()">?</button>
@@ -104,6 +117,7 @@
       </div>
     </div>
 
+    <!-- Modal de Inicio de Sesión -->
     <div class="modal-backdrop" *ngIf="showLogin()">
       <div class="modal-card">
         <h3>Acceso</h3>
@@ -122,6 +136,7 @@
       </div>
     </div>
 
+    <!-- Modal de Registro de Nuevo Usuario -->
     <div class="modal-backdrop" *ngIf="showSignup()">
       <div class="modal-card">
         <h3>Registro</h3>

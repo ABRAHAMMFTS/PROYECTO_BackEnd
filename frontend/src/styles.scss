@@ -1,3 +1,4 @@
+/* Importación de fuentes personalizadas FOTB y FOTDB desde archivos locales */
 @font-face {
   font-family: 'FOTB';
   src: url('/assets/fonts/FOT-Seurat-Pro-B.otf') format('opentype');
@@ -8,6 +9,7 @@
   src: url('/assets/fonts/FOT-Seurat-Pro-DB.otf') format('opentype');
 }
 
+/* Variables CSS globales para colores y efectos de sombra usado en toda la aplicación */
 :root {
   --white: #FFFCE5;
   --red: #dd0000;
@@ -19,10 +21,12 @@
   --shadow: 0 10px 30px rgba(0,0,0,.18);
 }
 
+/* Reset universal de estilos para evitar comportamientos inconsistentes */
 * {
   box-sizing: border-box;
 }
 
+/* Estilos base para documentos HTML y body: fuente, fondo, comportamiento de scroll */
 html,
 body {
   margin: 0;
@@ -33,15 +37,18 @@ body {
   scroll-behavior: smooth;
 }
 
+/* Evitar scroll horizontal en body */
 body {
   overflow-x: hidden;
 }
 
+/* Imágenes responsive: tamaño máximo 100% del contenedor */
 img {
   max-width: 100%;
   display: block;
 }
 
+/* Heredar fuente en botones e inputs para mantener consistencia tipográfica */
 button,
 input {
   font: inherit;

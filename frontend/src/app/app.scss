@@ -1,3 +1,4 @@
+/* Estilos raíz del componente: ocupar toda la altura y aplicar colores personalizados */
 :host {
   display: block;
   box-sizing: border-box;
@@ -5,6 +6,7 @@
   color: var(--greendark);
 }
 
+/* Aplicar border-box a todos los elementos para cálculos de tamaño más previsibles */
 * {
   box-sizing: border-box;
 }
@@ -293,15 +295,19 @@ main {
   cursor: pointer;
 }
 
+/* Estilos responsive para pantallas más pequeñas (tablets y móviles) */
 @media (max-width: 900px) {
+  /* En pantallas pequeñas el hero cambia a una sola columna */
   .hero {
     grid-template-columns: 1fr;
   }
 
+  /* Las tarjetas de eventos también se adaptan a una columna */
   .event-card {
     grid-template-columns: 1fr;
   }
 
+  /* El grid de estadísticas se convierte en una columna */
   .stats {
     grid-template-columns: 1fr;
   }

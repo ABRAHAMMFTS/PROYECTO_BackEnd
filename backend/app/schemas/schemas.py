@@ -3,26 +3,25 @@ from typing import Optional
 from datetime import date, datetime, time
 
 
-# ── Usuario ──────────────────────────────────────────
 class UsuarioBase(BaseModel):
-    correo: str
-    edad: int
-    sexo: str
-    municipio: str
-    nomUsu: str
-    telefono: Optional[str] = None
-    fecha_creacion: date
+    correo:          str
+    nombre_completo: str
+    telefono:        Optional[str] = None
+    rol:             Optional[str] = None
+    fecha_creacion:  date
+    id_deporte:      Optional[str] = None
+    sexo:            Optional[str] = None
 
 class UsuarioCreate(UsuarioBase):
-    contrasenha: str
+    contrasenia_hash: str
 
 class UsuarioRead(UsuarioBase):
     id_usuario: str
+    id_rol:     Optional[int] = None
     class Config:
         from_attributes = True
 
 
-# ── Deporte ───────────────────────────────────────────
 class DeporteBase(BaseModel):
     nomDepo: str
 
@@ -35,7 +34,7 @@ class DeporteRead(DeporteBase):
         from_attributes = True
 
 
-# ── Zona ──────────────────────────────────────────────
+
 class ZonaBase(BaseModel):
     nomZona: str
     municipio: str
@@ -49,7 +48,7 @@ class ZonaRead(ZonaBase):
         from_attributes = True
 
 
-# ── Instalacion ───────────────────────────────────────
+
 class InstalacionBase(BaseModel):
     nomInst: str
     id_zona: str
@@ -63,7 +62,7 @@ class InstalacionRead(InstalacionBase):
         from_attributes = True
 
 
-# ── Entrenador ────────────────────────────────────────
+
 class EntrenadorBase(BaseModel):
     anhos_exp: Optional[int] = None
     id_instalacion: str
@@ -77,7 +76,7 @@ class EntrenadorRead(EntrenadorBase):
         from_attributes = True
 
 
-# ── Horario ───────────────────────────────────────────
+
 class HorarioBase(BaseModel):
     dias: date
     hora_ini: time
@@ -93,7 +92,7 @@ class HorarioRead(HorarioBase):
         from_attributes = True
 
 
-# ── Equipo ────────────────────────────────────────────
+
 class EquipoBase(BaseModel):
     nomEqui: str
     cant_int: int
@@ -110,7 +109,7 @@ class EquipoRead(EquipoBase):
         from_attributes = True
 
 
-# ── Publicacion ───────────────────────────────────────
+
 class PublicacionBase(BaseModel):
     tipo: str
     titulo: str
@@ -129,15 +128,13 @@ class PublicacionRead(PublicacionBase):
         from_attributes = True
 
 
-# ── Evento ────────────────────────────────────────────
 class EventoBase(BaseModel):
-    nomEve: str
-    fecha_ini: date
-    fecha_fin: date
-    descripcion: str
-    id_deporte: str
+    nombre:         str
+    fecha_inicio:   date
+    descripcion:    str
+    id_deporte:     str
     id_instalacion: str
-    id_usuario: str
+    organizador:    str
 
 class EventoCreate(EventoBase):
     id_evento: str
@@ -148,14 +145,12 @@ class EventoRead(EventoBase):
         from_attributes = True
 
 
-# ── Reserva ───────────────────────────────────────────
 class ReservaBase(BaseModel):
-    fecha_resIni: datetime
-    fecha_resFin: datetime
-    id_usuario: Optional[str] = None
-    id_equipo: Optional[str] = None
-    id_instalacion: str
-    id_horario: str
+    id_usuario:            Optional[str] = None
+    id_equipo:             Optional[str] = None
+    id_instalacion:        str
+    id_horario_disponible: str
+    fecha_r:               date
 
 class ReservaCreate(ReservaBase):
     id_reserva: str
@@ -166,7 +161,7 @@ class ReservaRead(ReservaBase):
         from_attributes = True
 
 
-# ── Inscripcion ───────────────────────────────────────
+
 class InscripcionBase(BaseModel):
     id_equipo: str
     id_evento: str
@@ -176,5 +171,22 @@ class InscripcionCreate(InscripcionBase):
 
 class InscripcionRead(InscripcionBase):
     id_inscripcion: str
+    class Config:
+        from_attributes = True
+
+
+class LoginRequest(BaseModel):
+    correo: str
+    contrasenha: str
+
+class LoginResponse(BaseModel):
+    access_token: str
+    token_type: str
+    id_rol: int
+    nomUsu: str
+
+class RolRead(BaseModel):
+    id_rol: int
+    nombre: str
     class Config:
         from_attributes = True

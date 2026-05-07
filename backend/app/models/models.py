@@ -5,19 +5,26 @@ from sqlalchemy import (
 )
 from app.config.db import Base
 
+class Rol(Base):
+    __tablename__ = "rol"  
+
+    id_rol  = Column(Integer, primary_key=True, autoincrement=True)
+    nombre  = Column(String(20), nullable=False)
+
 
 class Usuario(Base):
     __tablename__ = "usuario"
 
-    id_usuario     = Column(String(36), primary_key=True)
-    correo         = Column(String(50), nullable=False)
-    edad           = Column(Integer, nullable=False)
-    sexo           = Column(CHAR(1), nullable=False)
-    municipio      = Column(String(20), nullable=False)
-    contrasenha    = Column(String(20), nullable=False)
-    nomUsu         = Column(String(50), nullable=False)
-    telefono       = Column(String(11))
-    fecha_creacion = Column(Date, nullable=False)
+    id_usuario       = Column(String(10), primary_key=True)
+    correo           = Column(String(50), nullable=False)
+    contrasenia_hash = Column(String(100), nullable=False)
+    nombre_completo  = Column(String(50), nullable=False)
+    telefono         = Column(String(15))
+    rol              = Column(String(2))
+    fecha_creacion   = Column(Date, nullable=False)
+    id_deporte       = Column(String(15), ForeignKey("deporte.id_deporte"))
+    id_rol           = Column(Integer, ForeignKey("rol.id_rol"), default=2)
+    sexo             = Column(CHAR(1))
 
 
 class Deporte(Base):
@@ -89,25 +96,23 @@ class Evento(Base):
     __tablename__ = "evento"
 
     id_evento      = Column(String(20), primary_key=True)
-    nomEve         = Column(String(20), nullable=False)
-    fecha_ini      = Column(Date, nullable=False)
-    fecha_fin      = Column(Date, nullable=False)
+    nombre         = Column(String(20), nullable=False)
+    fecha_inicio   = Column(Date, nullable=False)
     descripcion    = Column(Text, nullable=False)
     id_deporte     = Column(String(50), ForeignKey("deporte.id_deporte"), nullable=False)
     id_instalacion = Column(String(20), ForeignKey("instalacion.id_instalacion"), nullable=False)
-    id_usuario     = Column(String(50), ForeignKey("usuario.id_usuario"), nullable=False)
+    organizador    = Column(String(50), ForeignKey("usuario.id_usuario"), nullable=False)
 
 
 class Reserva(Base):
     __tablename__ = "reserva"
 
-    id_reserva     = Column(String(20), primary_key=True)
-    fecha_resIni   = Column(DateTime, nullable=False)
-    fecha_resFin   = Column(DateTime, nullable=False)
-    id_usuario     = Column(String(50), ForeignKey("usuario.id_usuario"))
-    id_equipo      = Column(String(20), ForeignKey("equipo.id_equipo"))
-    id_instalacion = Column(String(20), ForeignKey("instalacion.id_instalacion"), nullable=False)
-    id_horario     = Column(String(20), ForeignKey("horarios.id_horario"), nullable=False)
+    id_reserva            = Column(String(20), primary_key=True)
+    id_usuario            = Column(String(50), ForeignKey("usuario.id_usuario"))
+    id_equipo             = Column(String(20), ForeignKey("equipo.id_equipo"))
+    id_instalacion        = Column(String(20), ForeignKey("instalacion.id_instalacion"), nullable=False)
+    id_horario_disponible = Column(String(20), ForeignKey("horarios.id_horario"), nullable=False)
+    fecha_r               = Column(Date, nullable=False)
 
 
 class Inscripcion(Base):

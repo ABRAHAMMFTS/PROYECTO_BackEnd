@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 from app.routers import (
     usuarios, deporte, zona, instalacion,
     entrenador, horario, equipo, publicacion,
-    evento, reserva, inscripcion
+    evento, reserva, inscripcion, auth, roles
 )
 
 app = FastAPI(title="SportPoint API", version="1.0.0")
@@ -27,3 +28,5 @@ app.include_router(publicacion.router)
 app.include_router(evento.router)
 app.include_router(reserva.router)
 app.include_router(inscripcion.router)
+app.include_router(auth.router)
+app.include_router(roles.router)

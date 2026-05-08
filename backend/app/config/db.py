@@ -11,13 +11,17 @@ POSTGRES_PORT = os.getenv("POSTGRES_PORT", "5432")
 POSTGRES_DB = os.getenv("POSTGRES_DB", "sportpoint")
 POSTGRES_USER = os.getenv("POSTGRES_USER", "postgres")
 POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "")
-
+"""
 database_url = os.getenv(
     "DATABASE_URL",
     "postgresql://postgres:DET28DVMapgvwkIP@db.xiqwgapmkxzjfcraeqzz.supabase.co:5432/postgres"
 )
 #database_url = f"postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
-
+"""
+database_url = os.getenv(
+    "DATABASE_URL",
+    "postgresql://postgres:DET28DVMapgvwkIP@aws-1-us-east-2.pooler.supabase.com:5432/postgres"
+)
 try:
     engine = create_engine(database_url, pool_pre_ping=True)
     # Verificar conexión

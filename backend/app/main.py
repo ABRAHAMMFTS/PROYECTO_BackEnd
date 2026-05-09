@@ -1,4 +1,6 @@
+# SportPoint API - CORS Adjustment v1.1
 from fastapi import FastAPI
+
 from fastapi.middleware.cors import CORSMiddleware
 from app.config.db import Base, engine
 

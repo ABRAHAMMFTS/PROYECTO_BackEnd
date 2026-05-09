@@ -16,12 +16,7 @@ class UsuarioCreate(UsuarioBase):
 
 class UsuarioRead(UsuarioBase):
     id_usuario:      str
-<<<<<<< ours
     id_rol:          Optional[int] = 2
-
-=======
-    id_rol:          int
->>>>>>> theirs
     fecha_creacion:  date
     class Config:
         from_attributes = True
@@ -161,7 +156,7 @@ class ReservaBase(BaseModel):
     fecha_resFin:   datetime
 
 class ReservaCreate(ReservaBase):
-    id_reserva: str
+    pass
 
 class ReservaRead(ReservaBase):
     id_reserva: str

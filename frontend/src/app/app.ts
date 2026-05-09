@@ -187,6 +187,7 @@ export class App implements OnInit, OnDestroy {
     localStorage.removeItem('id_usuario');
     localStorage.removeItem('id_rol');
     localStorage.removeItem('nomUsu');
+    localStorage.removeItem('token');
     localStorage.removeItem('eventos_guardados');
     this.isAuthenticated.set(false);
     this.savedEventIds.set([]);
@@ -237,6 +238,7 @@ export class App implements OnInit, OnDestroy {
           id_usuario: res.id_usuario,
           id_rol: res.id_rol 
         }));
+        localStorage.setItem('token', res.access_token);
         localStorage.setItem('id_usuario', res.id_usuario);
         localStorage.setItem('id_rol', res.id_rol.toString());
         localStorage.setItem('nomUsu', res.nomUsu);

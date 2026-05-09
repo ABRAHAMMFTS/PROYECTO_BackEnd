@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -45,24 +45,31 @@ export class ApiService {
 
   constructor(private readonly http: HttpClient) {}
 
+  private authOptions() {
+    const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null;
+    return token
+      ? { headers: new HttpHeaders({ Authorization: `Bearer ${token}` }) }
+      : {};
+  }
+
   private get<T>(path: string): Observable<T> {
-    return this.http.get<T>(`${this.baseUrl}/${path}`);
+    return this.http.get<T>(`${this.baseUrl}/${path}`, this.authOptions());
   }
 
   private post<T>(path: string, body: unknown): Observable<T> {
-    return this.http.post<T>(`${this.baseUrl}/${path}`, body);
+    return this.http.post<T>(`${this.baseUrl}/${path}`, body, this.authOptions());
   }
 
   private put<T>(path: string, body: unknown): Observable<T> {
-    return this.http.put<T>(`${this.baseUrl}/${path}`, body);
+    return this.http.put<T>(`${this.baseUrl}/${path}`, body, this.authOptions());
   }
 
   private patch<T>(path: string, body: unknown): Observable<T> {
-    return this.http.patch<T>(`${this.baseUrl}/${path}`, body);
+    return this.http.patch<T>(`${this.baseUrl}/${path}`, body, this.authOptions());
   }
 
   private delete<T>(path: string): Observable<T> {
-    return this.http.delete<T>(`${this.baseUrl}/${path}`);
+    return this.http.delete<T>(`${this.baseUrl}/${path}`, this.authOptions());
   }
 
   getEventos(): Observable<Evento[]> {

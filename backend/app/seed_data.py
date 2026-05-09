@@ -1,8 +1,5 @@
 from datetime import date, datetime
-<<<<<<< ours
-=======
 from sqlalchemy import text
->>>>>>> theirs
 from sqlalchemy.orm import Session
 
 from app.config.db import SessionLocal
@@ -11,18 +8,13 @@ from app.models.models import (
     Evento,
     Instalacion,
     ParticipanteEvento,
-<<<<<<< ours
-=======
     Publicacion,
->>>>>>> theirs
     Rol,
     Usuario,
     Zona,
 )
 
 
-<<<<<<< ours
-=======
 def ensure_schema_compatibility(db: Session) -> None:
     """Apply safe Supabase schema patches required by the demo data.
 
@@ -104,7 +96,6 @@ def ensure_schema_compatibility(db: Session) -> None:
     db.commit()
 
 
->>>>>>> theirs
 def _upsert_usuario(db: Session, data: dict) -> None:
     usuario = db.query(Usuario).filter(Usuario.id_usuario == data["id_usuario"]).first()
     if usuario:
@@ -134,11 +125,8 @@ def seed_demo_data() -> None:
 
     db: Session = SessionLocal()
     try:
-<<<<<<< ours
-=======
         ensure_schema_compatibility(db)
 
->>>>>>> theirs
         roles_data = [
             {"id_rol": 1, "nombre": "Administrador"},
             {"id_rol": 2, "nombre": "Usuario"},
@@ -173,10 +161,7 @@ def seed_demo_data() -> None:
         db.commit()
 
         zonas_data = [
-<<<<<<< ours
-=======
             {"id_zona": "Z-01", "nomZona": "Zona Norte", "municipio": "Cartagena"},
->>>>>>> theirs
             {"id_zona": "ZNTE01", "nomZona": "Norte - Centro", "municipio": "Cartagena"},
             {"id_zona": "ZNTE02", "nomZona": "Norte Residencial", "municipio": "Cartagena"},
             {"id_zona": "ZCTO01", "nomZona": "Península Turística", "municipio": "Cartagena"},
@@ -200,11 +185,7 @@ def seed_demo_data() -> None:
                 "sexo": "M",
                 "municipio": "Cartagena",
                 "contrasenha": "admin123",
-<<<<<<< ours
-                "nomUsu": "AdminSport",
-=======
                 "nomUsu": "Admin SportPoint",
->>>>>>> theirs
                 "telefono": "3000000000",
                 "id_rol": 1,
             },
@@ -269,10 +250,7 @@ def seed_demo_data() -> None:
         db.commit()
 
         instalaciones_data = [
-<<<<<<< ours
-=======
             {"id_instalacion": "INST-01", "nomInst": "Polideportivo Norte", "id_zona": "Z-01"},
->>>>>>> theirs
             {"id_instalacion": "I1", "nomInst": "Estadio Municipal de Cartagena", "id_zona": "ZNTE01"},
             {"id_instalacion": "I2", "nomInst": "Polideportivo Central", "id_zona": "ZCTO02"},
             {"id_instalacion": "I3", "nomInst": "Complejo Acuático Bolívar", "id_zona": "ZSUR01"},
@@ -287,10 +265,7 @@ def seed_demo_data() -> None:
         db.commit()
 
         eventos_data = [
-<<<<<<< ours
-=======
             {"id_evento": "EV-NEW-01", "nomEve": "Torneo Fútbol 5", "descripcion": "Gran torneo de fútbol.", "id_deporte": "Fútbol", "fecha": "2026-06-05", "id_instalacion": "INST-01"},
->>>>>>> theirs
             {"id_evento": "E1", "nomEve": "Torneo Barrial", "descripcion": "Liga local de fútbol en fase eliminatoria.", "id_deporte": "Fútbol", "fecha": "2026-05-10", "id_instalacion": "I1"},
             {"id_evento": "E2", "nomEve": "Basketball Cup", "descripcion": "Campeonato juvenil categoría 14-18 años.", "id_deporte": "Baloncesto", "fecha": "2026-05-12", "id_instalacion": "I2"},
             {"id_evento": "E3", "nomEve": "Nado Libre", "descripcion": "Competencia en piscina olímpica.", "id_deporte": "Natación", "fecha": "2026-05-15", "id_instalacion": "I3"},
@@ -351,8 +326,6 @@ def seed_demo_data() -> None:
                 ))
         db.commit()
 
-<<<<<<< ours
-=======
         publicaciones_data = [
             {
                 "id_publi": "PUB-01",
@@ -379,7 +352,6 @@ def seed_demo_data() -> None:
                 db.add(Publicacion(**publi_data))
         db.commit()
 
->>>>>>> theirs
         print("Seed demo SportPoint sincronizado correctamente.")
     except Exception as exc:
         db.rollback()

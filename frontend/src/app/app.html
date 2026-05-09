@@ -1,0 +1,429 @@
+<!-- Plantilla principal SportPoint Angular -->
+<div class="app-root">
+
+  <!-- Header fijo -->
+  <header>
+    <img src="assets/img/logo_color.png" alt="Logo SportPoint" height="80" />
+    <nav>
+      <ul>
+        <li><a href="#" (click)="changeSection('Inicio'); $event.preventDefault()" [class.active]="activeSection() === 'Inicio'">Inicio</a></li>
+        <li><a href="#" (click)="changeSection('Eventos'); $event.preventDefault()" [class.active]="activeSection() === 'Eventos'">Eventos</a></li>
+        <li><a href="#" (click)="changeSection('Espacios'); $event.preventDefault()" [class.active]="activeSection() === 'Espacios'">Espacios</a></li>
+        <li><a href="#" (click)="changeSection('Perfil'); $event.preventDefault()" [class.active]="activeSection() === 'Perfil'">Mi Perfil</a></li>
+      </ul>
+    </nav>
+    <div class="button-container">
+      <button id="showformLogin" type="button" (click)="toggleLogin()">Iniciar Sesión</button>
+      <button id="showformSignup" type="button" (click)="toggleSignup()">Crear Cuenta</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===== INICIO ===== -->
+    <section *ngIf="activeSection() === 'Inicio'" id="Inicio" class="active">
+
+      <!-- Hero con carrusel fullscreen -->
+      <div class="hero">
+        <div class="carousel">
+          <img *ngFor="let slide of slides(); let i = index"
+               class="carousel-slide"
+               [class.active]="currentSlide() === i"
+               [src]="slide" [alt]="'Slide ' + (i+1)" />
+          <div class="carousel-dots">
+            <span *ngFor="let slide of slides(); let i = index"
+                  class="dot" [class.active]="currentSlide() === i"
+                  (click)="goToSlide(i)"></span>
+          </div>
+        </div>
+        <div class="hero-text">
+          <h1>El deporte de <span class="font-borel">Bolívar</span></h1>
+          <p>Encuentra eventos, equipos y espacios deportivos cerca de ti</p>
+        </div>
+      </div>
+
+      <!-- Estadísticas animadas -->
+      <div class="stats">
+        <div class="stat-card">
+          <h2 id="stat-eventos">{{ statEventos() }}</h2>
+          <p><a href="#" (click)="changeSection('Eventos'); $event.preventDefault()">Eventos <br><span class="font-borel-lil">activos</span></a></p>
+        </div>
+        <div class="stat-card">
+          <h2 id="stat-espacios">{{ statEspacios() }}</h2>
+          <p><a href="#" (click)="changeSection('Espacios'); $event.preventDefault()">Espacios <br><span class="font-borel-lil">disponibles</span></a></p>
+        </div>
+        <div class="stat-card">
+          <h2 id="stat-municipios">{{ statMunicipios() }}</h2>
+          <p>Municipios <br><span class="font-borel-lil">cubiertos</span></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== EVENTOS ===== -->
+    <section *ngIf="activeSection() === 'Eventos'" id="Eventos" class="active">
+      <div class="eventos-section">
+        <div class="section-header">
+          <button class="filtrar-btn" (click)="toggleFiltros()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="9" y1="18" x2="15" y2="18"/>
+            </svg>
+            Filtrar
+          </button>
+        </div>
+
+        <!-- Eventos cerca de ti -->
+        <div class="fila">
+          <div class="fila-header">
+            <span class="fila-titulo cerca">Eventos cerca de ti</span>
+            <button class="ver-mas">Ver más →</button>
+          </div>
+          <div class="carrusel-wrap">
+            <button class="scroll-btn left" (click)="scrollCarrusel('c1', -1)">‹</button>
+            <div class="carrusel" id="c1">
+              <div class="evento-card cerca" *ngFor="let evento of eventosCercanosFiltrados" (click)="abrirModal(evento)">
+                <div class="card-img">
+                  <img [src]="imagenesDeporte[evento.deporte] || 'assets/img/logo_color.png'" [alt]="evento.deporte" onerror="this.style.display='none'">
+                </div>
+                <div class="card-body">
+                  <div class="card-nombre">{{ evento.nombre }}</div>
+                  <div class="card-desc">{{ evento.descripcion }}</div>
+                  <div class="card-tags">
+                    <span class="tag">{{ evento.deporte }}</span>
+                    <span class="tag">{{ evento.fecha }}</span>
+                    <span class="tag">{{ evento.hora }}</span>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <svg class="icon-location" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                  <span>{{ evento.municipio }}</span>
+                </div>
+              </div>
+            </div>
+            <button class="scroll-btn right" (click)="scrollCarrusel('c1', 1)">›</button>
+          </div>
+        </div>
+
+        <!-- Eventos próximos -->
+        <div class="fila">
+          <div class="fila-header">
+            <span class="fila-titulo proximo">Eventos próximos</span>
+            <button class="ver-mas">Ver más →</button>
+          </div>
+          <div class="carrusel-wrap">
+            <button class="scroll-btn left" (click)="scrollCarrusel('c2', -1)">‹</button>
+            <div class="carrusel" id="c2">
+              <div class="evento-card proximo" *ngFor="let evento of eventosProximos()" (click)="abrirModal(evento)">
+                <div class="card-img">
+                  <img [src]="imagenesDeporte[evento.deporte] || 'assets/img/logo_color.png'" [alt]="evento.deporte" onerror="this.style.display='none'">
+                </div>
+                <div class="card-body">
+                  <div class="card-nombre">{{ evento.nombre }}</div>
+                  <div class="card-desc">{{ evento.descripcion }}</div>
+                  <div class="card-tags">
+                    <span class="tag">{{ evento.deporte }}</span>
+                    <span class="tag">{{ evento.fecha }}</span>
+                    <span class="tag">{{ evento.hora }}</span>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <svg class="icon-location" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                  <span>{{ evento.municipio }}</span>
+                </div>
+              </div>
+            </div>
+            <button class="scroll-btn right" (click)="scrollCarrusel('c2', 1)">›</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal de evento -->
+      <div class="overlay open" *ngIf="showModal()" (click)="cerrarModal()">
+        <button class="modal-close" (click)="cerrarOverlay()">✕</button>
+        <div class="modal" (click)="$event.stopPropagation()">
+          <div class="modal-img" id="modal-img"></div>
+          <div class="modal-body">
+            <div class="modal-titulo">{{ selectedEvento()?.nombre }}</div>
+            <div class="modal-meta">{{ selectedEvento()?.fecha }} · {{ selectedEvento()?.hora }} · {{ selectedEvento()?.municipio }}</div>
+            <div class="modal-desc">{{ selectedEvento()?.descripcion }}</div>
+            <div class="modal-tags">
+              <span class="tag">{{ selectedEvento()?.deporte }}</span>
+            </div>
+            <div class="modal-actions">
+              <button class="btn-primary">Reservar cupo</button>
+              <button class="btn-secondary">Guardar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== ESPACIOS ===== -->
+    <section *ngIf="activeSection() === 'Espacios'" id="Espacios" class="active">
+      <div class="hero-img">
+        <img src="assets/img/buscadorinst.png" alt="Instalaciones">
+      </div>
+
+      <div class="buscador-wrap">
+        <div class="buscador-bar" (click)="toggleFiltros()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#666;flex-shrink:0">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" placeholder="Buscar instalación" id="buscador-input"
+                 [(ngModel)]="buscadorTexto"
+                 (click)="$event.stopPropagation(); abrirFiltros()" />
+          <svg id="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               style="color:#666;flex-shrink:0;transition:transform 0.2s"
+               [style.transform]="filtrosAbiertos() ? 'rotate(180deg)' : 'rotate(0deg)'">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </div>
+
+        <div class="filtros-panel" *ngIf="filtrosAbiertos()">
+          <div class="filtros-grid">
+            <div class="filtro-grupo">
+              <div class="filtro-titulo">Zona</div>
+              <div class="check-item" *ngFor="let zona of zonas">
+                <input type="checkbox" [id]="'z'+zona.id" [attr.data-tag]="zona.tag" (change)="actualizarTags($event)">
+                <label [for]="'z'+zona.id">{{ zona.nombre }}</label>
+              </div>
+            </div>
+            <div class="filtro-grupo">
+              <div class="filtro-titulo">Municipio</div>
+              <div class="check-item" *ngFor="let m of municipios">
+                <input type="checkbox" [id]="'m'+m.id" [attr.data-tag]="m.nombre" (change)="actualizarTags($event)">
+                <label [for]="'m'+m.id">{{ m.nombre }}</label>
+              </div>
+            </div>
+            <div class="filtro-grupo">
+              <div class="filtro-titulo">Deporte</div>
+              <div class="check-item" *ngFor="let d of deportes">
+                <input type="checkbox" [id]="'d'+d.id" [attr.data-tag]="d.nombre" (change)="actualizarTags($event)">
+                <label [for]="'d'+d.id">{{ d.nombre }}</label>
+              </div>
+            </div>
+            <div class="filtro-grupo">
+              <div class="filtro-titulo">Acceso</div>
+              <div class="check-item" *ngFor="let t of tiposInstalacion">
+                <input type="checkbox" [id]="'t'+t.id" [attr.data-tag]="t.nombre" (change)="actualizarTags($event)">
+                <label [for]="'t'+t.id">{{ t.nombre }}</label>
+              </div>
+            </div>
+          </div>
+          <div class="filtros-footer">
+            <button class="btn-limpiar" (click)="limpiar()">Limpiar filtros</button>
+            <button class="btn-buscar" (click)="buscar()">Buscar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tags-activos" id="tags-activos">
+        <span class="tag-activo" *ngFor="let tag of filtrosSeleccionados()">
+          {{ tag }}
+          <button (click)="quitarTag(tag)">✕</button>
+        </span>
+      </div>
+
+      <!-- Resultados de Instalaciones (Dinámico) -->
+      <div class="instalaciones-grid">
+        <div class="inst-card" *ngFor="let inst of instalaciones()">
+          <div class="inst-icon">🏛️</div>
+          <div class="inst-info">
+            <h3>{{ inst.nombre }}</h3>
+            <p>Ubicación: {{ inst.id_zona }}</p>
+          </div>
+          <button class="btn-reservar">Ver detalles</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PERFIL ===== -->
+    <section *ngIf="activeSection() === 'Perfil'" id="Perfil" class="active">
+      <div class="perfil-page">
+        <div class="col-izq">
+          <div class="perfil-header">
+            <div class="avatar-wrap">
+              <div class="avatar">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                  <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                </svg>
+              </div>
+              <button class="cambiar-foto-btn">Cambiar Foto</button>
+            </div>
+            <div class="perfil-info">
+              <div class="username">@<span class="db-field">{{ perfilUsuario().username }}</span></div>
+              <div class="meta-row">
+                <span class="db-field">{{ perfilUsuario().municipio }}</span>
+                <span>, Colombia</span>
+              </div>
+              <div class="meta-row">
+                <span class="db-field">{{ perfilUsuario().edad }}</span>
+                <span>años</span>
+                <span class="db-field">{{ perfilUsuario().genero }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-grid">
+            <div>
+              <div class="section-label">Redes sociales</div>
+              <div class="social-icons">
+                <a href="#" class="social-link">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
+                  </svg>
+                  Instagram
+                </a>
+              </div>
+              <div class="social-icons" style="margin-top:6px">
+                <a href="#" class="social-link">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/>
+                  </svg>
+                  TikTok
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <button class="editar-btn">Editar Perfil</button>
+        </div>
+
+        <div class="col-der">
+          <div class="tabs">
+            <button class="tab" [class.active]="activeTab() === 'Reservas'" (click)="changeTab('Reservas')">Mis Reservas</button>
+            <button class="tab" [class.active]="activeTab() === 'Eventos'" (click)="changeTab('Eventos')">Mis Eventos</button>
+            <button class="tab" [class.active]="activeTab() === 'Favoritos'" (click)="changeTab('Favoritos')">Mis Favoritos</button>
+          </div>
+          <div class="tab-content">
+            <div *ngIf="activeTab() === 'Reservas'">Aquí irá el contenido de Mis Reservas...</div>
+            <div *ngIf="activeTab() === 'Eventos'">Aquí irá el contenido de Mis Eventos...</div>
+            <div *ngIf="activeTab() === 'Favoritos'">Aquí irá el contenido de Mis Favoritos...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <div class="footer-left">
+      <img src="assets/img/logo_blanco.svg" alt="Logo Blanco" class="footer-img-one">
+      <p>© 2026 Todos los derechos reservados · Proyecto Talento TECH</p>
+    </div>
+    <div class="footer-right">
+      <p>MinTIC</p>
+      <img src="assets/img/mintic_logo.svg" alt="MinTIC" class="footer-img-two">
+    </div>
+  </footer>
+
+  <!-- ===== SIGNUP MODAL ===== -->
+  <div class="signup-container" id="signup-container" *ngIf="showSignup()">
+    <div id="signupFormContainer" class="signupForm-container">
+      <div class="board">
+        <div class="board-back">
+          <div class="board-details">
+            <h3>Únete ya</h3>
+            <h1>Crea una <br>cuenta</h1>
+            <p>Se parte de toda la experiencia deportiva en Bolívar</p>
+            <div class="img-signup">
+              <dotlottie-wc src="assets/media/player.lottie" style="width:auto;height:130px" loop autoplay></dotlottie-wc>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="centersignform">
+        <form id="signupForm" (ngSubmit)="crearCuenta($event)">
+          <h2>Empecemos</h2>
+          <p class="loginredirectlink">¿Ya tienes una cuenta? <a href="#" id="showformLoginLink" (click)="toggleSignup(); toggleLogin(); $event.preventDefault()">Iniciar Sesión</a></p>
+          <div class="field-group">
+            <label for="name" id="lablemargin">Nombre de Usuario</label>
+            <input type="text" id="name" placeholder="Ingrese su nombre de usuario" required>
+          </div>
+          <div class="signflhorizontal">
+            <div class="field-group">
+              <label for="age" id="lablemargin">Edad</label>
+              <input type="number" id="age" min="5" max="100" placeholder="Ingrese su edad" required>
+            </div>
+            <div class="field-group">
+              <label for="sexo" class="lablemargin">Sexo</label>
+              <select id="sexo" required>
+                <option value="">Selecciona tu sexo</option>
+                <option value="femenino">Femenino</option>
+                <option value="masculino">Masculino</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-group">
+            <label for="municipio" class="lablemargin">Municipio</label>
+            <select id="municipio" required>
+              <option value="">Selecciona tu municipio</option>
+              <option *ngFor="let m of municipios" [value]="m.nombre">{{ m.nombre }}</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label for="tel" id="lablemargin">Teléfono</label>
+            <input type="tel" id="tel" placeholder="Ingrese su número de teléfono" required>
+          </div>
+          <div class="signflhorizontal">
+            <div class="field-group">
+              <label for="signup-email" id="lablemargin">Email</label>
+              <input type="email" id="signup-email" placeholder="Ingrese su email" required>
+            </div>
+            <div class="field-group">
+              <label for="signup-password" id="lablemargin">Contraseña</label>
+              <div class="input-eye-wrapper">
+                <input type="password" id="signup-password" placeholder="Ingrese su contraseña" required>
+                <span class="toggle-eye">👁️</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <button type="submit">Crear Cuenta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="cut-button" id="signupCutButton" (click)="toggleSignup()">&#10005;</div>
+  </div>
+
+  <!-- ===== LOGIN MODAL ===== -->
+  <div class="login-container" id="login-container" *ngIf="showLogin()">
+    <div id="loginFormContainer" class="loginForm-container">
+      <div class="board">
+        <div class="board-back board-back--login">
+          <div class="board-details">
+            <h3>¡Regresaste!</h3>
+            <h1>Es bueno verte nuevamente</h1>
+            <p>Inicia Sesión para recuperar tu cuenta</p>
+            <dotlottie-wc src="assets/media/Soccer_Ball.lottie" style="width:100px;height:100px" loop autoplay></dotlottie-wc>
+          </div>
+        </div>
+      </div>
+      <div class="centersignform">
+        <form id="loginForm" (ngSubmit)="iniciarSesion($event)">
+          <h2>¡Hola de nuevo!</h2>
+          <p class="loginredirectlink">¿No tienes cuenta? <a href="#" id="showformSignupLink" (click)="toggleLogin(); toggleSignup(); $event.preventDefault()">Crear Cuenta</a></p>
+          <div class="field-group">
+            <label for="login-email">Email</label>
+            <input type="email" id="login-email" placeholder="Ingrese su email" required>
+          </div>
+          <div class="field-group">
+            <label for="login-password">Contraseña</label>
+            <div class="input-eye-wrapper">
+              <input type="password" id="login-password" placeholder="Ingrese su contraseña" required>
+              <span class="toggle-eye">👁️</span>
+            </div>
+          </div>
+          <div>
+            <button type="submit">Iniciar Sesión</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="cut-button" id="loginCutButton" (click)="toggleLogin()">&#10005;</div>
+  </div>
+
+</div>

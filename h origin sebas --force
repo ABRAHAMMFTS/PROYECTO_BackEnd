@@ -1,0 +1,27 @@
+[33m336e07d[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32msebas[m[33m)[m fix: gitignore y remover node_modules
+[33m6cd81a2[m fix: agregar Vercel al CORS
+[33m62d78ff[m assets
+[33m0aac71e[m Merge pull request #2 from i-matallana/sebas
+[33m22f3176[m[33m ([m[1;31morigin/sebas[m[33m)[m feat: Panel de administrador agregado
+[33mb4c406c[m correccion de error del fronend
+[33ma11a3d1[m Merge origin/main into abraham for latest changes
+[33mfc6f5b2[m Integración Global Final: Conexión total de Eventos, Instalaciones y Perfil con el backend Python
+[33mcad5791[m ajuste de eventos (12 recuadros) y corrección de scroll carrusel en Angular
+[33mdceb9c4[m ajuste y arreglo del frontend - Angular: app.ts, app.html, styles.scss, index.html, angular.json
+[33mb7b49ab[m Conexión del frontend Angular con la API
+[33m38a8935[m Agregar comentarios explicativos en HTML, SCSS del componente y estilos globales para mejor documentación del código
+[33m5d63bb1[m se agrega el servicio ApiService para consumir eventos desde el endpoint /evento del backend en FastAPI con configuración de HttpClient
+[33m078fbf5[m Integrar la estructura HTML y CSS ya creadas de SportPoint dentro del componente principal de Angular con navegación y modales funcionales
+[33m06ef2ef[m actualizacion del front
+[33m1c66764[m front end actualizado
+[33m5a74e57[m Merge pull request #1 from i-matallana/sebas
+[33me54ab01[m feat: Agregue los routers, schemas, models y config de la API para sportpoint
+[33m9de83da[m Merge branch 'main' of https://github.com/i-matallana/PROYECTO_BackEnd
+[33m44db0ed[m Merge branch 'abraham'
+[33m217d8f4[m[33m ([m[1;31morigin/abraham[m[33m)[m Agregar proyecto Angular al frontend
+[33m006de2a[m cambios a la base de datos
+[33m32d09be[m Integrar proyecto Angular en frontend
+[33m5ff7bc6[m id usuario se genera solo
+[33m259f8a6[m Organizacion (carpetas)
+[33m5708fae[m prueba
+[33m9899816[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m Initial commit

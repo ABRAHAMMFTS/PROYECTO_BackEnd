@@ -1,29 +1,43 @@
 from pydantic import BaseModel
 from typing import Optional
-from datetime import date, datetime, time
+from datetime import date, time
+from passlib.context import CryptContext
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
-class UsuarioBase(BaseModel):
-    correo:          str
-    nombre_completo: str
-    telefono:        Optional[str] = None
-    rol:             Optional[str] = None
-    fecha_creacion:  date
-    id_deporte:      Optional[str] = None
-    sexo:            Optional[str] = None
-
-class UsuarioCreate(UsuarioBase):
-    contrasenia_hash: str
-
-class UsuarioRead(UsuarioBase):
-    id_usuario: str
-    id_rol:     Optional[int] = None
+# ── ROL ───────────────────────────────────────────────
+class RolRead(BaseModel):
+    id_rol: int
+    nombre: str
     class Config:
         from_attributes = True
 
 
+# ── USUARIO ───────────────────────────────────────────
+class UsuarioBase(BaseModel):
+    correo:          str
+    nombre_completo: str
+    telefono:        Optional[str] = None
+    rol:             str
+    id_deporte:      str
+    sexo:            Optional[str] = None
+
+class UsuarioCreate(UsuarioBase):
+    contrasenia: str  # plana, se hashea en el router
+
+class UsuarioRead(UsuarioBase):
+    id_usuario:    str
+    fecha_creacion: Optional[date] = None
+    id_rol:        Optional[int] = None
+    class Config:
+        from_attributes = True
+
+
+# ── DEPORTE ───────────────────────────────────────────
 class DeporteBase(BaseModel):
-    nomDepo: str
+    nombre:      str
+    descripcion: str
 
 class DeporteCreate(DeporteBase):
     id_deporte: str
@@ -34,24 +48,13 @@ class DeporteRead(DeporteBase):
         from_attributes = True
 
 
-
-class ZonaBase(BaseModel):
-    nomZona: str
-    municipio: str
-
-class ZonaCreate(ZonaBase):
-    id_zona: str
-
-class ZonaRead(ZonaBase):
-    id_zona: str
-    class Config:
-        from_attributes = True
-
-
-
+# ── INSTALACION ───────────────────────────────────────
 class InstalacionBase(BaseModel):
-    nomInst: str
-    id_zona: str
+    nombre:      str
+    direccion:   str
+    zona:        str
+    id_deporte:  str
+    admin_lugar: str
 
 class InstalacionCreate(InstalacionBase):
     id_instalacion: str
@@ -62,43 +65,30 @@ class InstalacionRead(InstalacionBase):
         from_attributes = True
 
 
-
-class EntrenadorBase(BaseModel):
-    anhos_exp: Optional[int] = None
-    id_instalacion: str
-
-class EntrenadorCreate(EntrenadorBase):
-    id_entrenador: str
-
-class EntrenadorRead(EntrenadorBase):
-    id_entrenador: str
-    class Config:
-        from_attributes = True
-
-
-
+# ── HORARIO DISPONIBLE ────────────────────────────────
 class HorarioBase(BaseModel):
-    dias: date
-    hora_ini: time
-    hora_fin: time
     id_instalacion: str
+    dia_semana:     int
+    hora_inicio:    time
+    hora_fin:       time
 
 class HorarioCreate(HorarioBase):
-    id_horario: str
+    id_horario_disponible: str
 
 class HorarioRead(HorarioBase):
-    id_horario: str
+    id_horario_disponible: str
     class Config:
         from_attributes = True
 
 
-
+# ── EQUIPO ────────────────────────────────────────────
 class EquipoBase(BaseModel):
-    nomEqui: str
-    cant_int: int
-    cat_gen: str
-    cat_edad: int
-    id_deporte: str
+    nombre:               str
+    id_capitan:           str
+    cantidad_integrantes: int
+    categorizacion:       str
+    id_deporte:           str
+    nivel:                Optional[str] = None
 
 class EquipoCreate(EquipoBase):
     id_equipo: str
@@ -109,32 +99,29 @@ class EquipoRead(EquipoBase):
         from_attributes = True
 
 
+# ── INTEGRANTE EQUIPO ─────────────────────────────────
+class IntegranteEquipoBase(BaseModel):
+    id_equipo:    str
+    id_usuario:   str
+    rol_en_equipo: str
 
-class PublicacionBase(BaseModel):
-    tipo: str
-    titulo: str
-    ruta_img: Optional[str] = None
-    contenido: Optional[str] = None
-    fecha_publi: datetime
-    id_usuario: Optional[str] = None
-    id_equipo: Optional[str] = None
+class IntegranteEquipoCreate(IntegranteEquipoBase):
+    id_integrante_equipo: str
 
-class PublicacionCreate(PublicacionBase):
-    id_publi: str
-
-class PublicacionRead(PublicacionBase):
-    id_publi: str
+class IntegranteEquipoRead(IntegranteEquipoBase):
+    id_integrante_equipo: str
     class Config:
         from_attributes = True
 
 
+# ── EVENTO ────────────────────────────────────────────
 class EventoBase(BaseModel):
-    nombre:         str
-    fecha_inicio:   date
-    descripcion:    str
-    id_deporte:     str
+    nombre:        str
+    id_deporte:    str
+    fecha_inicio:  date
     id_instalacion: str
-    organizador:    str
+    organizador:   str
+    descripcion:   Optional[str] = None
 
 class EventoCreate(EventoBase):
     id_evento: str
@@ -145,9 +132,59 @@ class EventoRead(EventoBase):
         from_attributes = True
 
 
+# ── PARTICIPANTE EVENTO ───────────────────────────────
+class ParticipanteEventoBase(BaseModel):
+    id_evento:  str
+    id_usuario: str
+    id_equipo:  str
+    estado:     str
+
+class ParticipanteEventoCreate(ParticipanteEventoBase):
+    id_participante_evento: str
+
+class ParticipanteEventoRead(ParticipanteEventoBase):
+    id_participante_evento: str
+    class Config:
+        from_attributes = True
+
+
+# ── PERFIL ENTRENADOR ─────────────────────────────────
+class PerfilEntrenadorBase(BaseModel):
+    id_usuario:        str
+    anios_experiencia: Optional[int] = None
+    id_deporte:        str
+
+class PerfilEntrenadorCreate(PerfilEntrenadorBase):
+    id_perfil_entrenador: str
+
+class PerfilEntrenadorRead(PerfilEntrenadorBase):
+    id_perfil_entrenador: str
+    class Config:
+        from_attributes = True
+
+
+# ── PUBLICACION ───────────────────────────────────────
+class PublicacionBase(BaseModel):
+    tipo:       str
+    titulo:     str
+    contenido:  str
+    id_deporte: str
+    fecha:      date
+    hora:       time
+
+class PublicacionCreate(PublicacionBase):
+    id_publicacion: str
+
+class PublicacionRead(PublicacionBase):
+    id_publicacion: str
+    class Config:
+        from_attributes = True
+
+
+# ── RESERVA ───────────────────────────────────────────
 class ReservaBase(BaseModel):
-    id_usuario:            Optional[str] = None
-    id_equipo:             Optional[str] = None
+    id_usuario:            str
+    id_equipo:             str
     id_instalacion:        str
     id_horario_disponible: str
     fecha_r:               date
@@ -161,32 +198,13 @@ class ReservaRead(ReservaBase):
         from_attributes = True
 
 
-
-class InscripcionBase(BaseModel):
-    id_equipo: str
-    id_evento: str
-
-class InscripcionCreate(InscripcionBase):
-    id_inscripcion: str
-
-class InscripcionRead(InscripcionBase):
-    id_inscripcion: str
-    class Config:
-        from_attributes = True
-
-
+# ── AUTH ──────────────────────────────────────────────
 class LoginRequest(BaseModel):
-    correo: str
+    correo:      str
     contrasenha: str
 
 class LoginResponse(BaseModel):
-    access_token: str
-    token_type: str
-    id_rol: int
-    nomUsu: str
-
-class RolRead(BaseModel):
-    id_rol: int
-    nombre: str
-    class Config:
-        from_attributes = True
+    access_token:   str
+    token_type:     str
+    id_rol:         Optional[int]
+    nombre_completo: str

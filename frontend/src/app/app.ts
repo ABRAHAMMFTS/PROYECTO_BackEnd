@@ -177,9 +177,9 @@ export class App implements OnInit, OnDestroy {
       },
       error: () => {
         this.instalaciones.set([
-          { id_instalacion: 'I1', nomInst: 'Estadio Municipal de Cartagena', id_zona: 'ZNTE01' },
-          { id_instalacion: 'I2', nomInst: 'Polideportivo Central', id_zona: 'ZCTO02' },
-          { id_instalacion: 'I3', nomInst: 'Complejo Acuático Bolívar', id_zona: 'ZSUR01' }
+          { id_instalacion: 'I1', nombre: 'Estadio Municipal de Cartagena', id_zona: 'ZNTE01' },
+          { id_instalacion: 'I2', nombre: 'Polideportivo Central', id_zona: 'ZCTO02' },
+          { id_instalacion: 'I3', nombre: 'Complejo Acuático Bolívar', id_zona: 'ZSUR01' }
         ]);
       }
     });

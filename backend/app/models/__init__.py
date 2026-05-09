@@ -1,7 +1,6 @@
 from .models import (
-    Usuario, Deporte, Zona, Instalacion, Entrenador,
-    Horario, Equipo, Publicacion, Evento, Reserva,
-    Inscripcion, IntegranteEquipo, UsuarioDeporte,
-    EntrenadorDeporte, DeporteInstalacion, Rol
+    Usuario, Deporte, Instalacion, HorarioDisponible,
+    Equipo, IntegranteEquipo, Evento, ParticipanteEvento,
+    PerfilEntrenador, Publicacion, Reserva, Rol
 )
 

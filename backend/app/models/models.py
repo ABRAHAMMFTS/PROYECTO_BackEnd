@@ -1,152 +1,131 @@
-
 from sqlalchemy import (
     Column, String, Integer, Date, DateTime,
     Time, Text, ForeignKey, CHAR
 )
 from app.config.db import Base
 
-class Rol(Base):
-    __tablename__ = "rol"  
 
-    id_rol  = Column(Integer, primary_key=True, autoincrement=True)
-    nombre  = Column(String(20), nullable=False)
+class Rol(Base):
+    __tablename__ = "rol"
+
+    id_rol = Column(Integer, primary_key=True, autoincrement=True)
+    nombre = Column(String(20), nullable=False)
 
 
 class Usuario(Base):
     __tablename__ = "usuario"
 
-    id_usuario       = Column(String(10), primary_key=True)
+    id_usuario       = Column(String(50), primary_key=True)
     correo           = Column(String(50), nullable=False)
     contrasenia_hash = Column(String(100), nullable=False)
     nombre_completo  = Column(String(50), nullable=False)
     telefono         = Column(String(15))
-    rol              = Column(String(2))
-    fecha_creacion   = Column(Date, nullable=False)
-    id_deporte       = Column(String(15), ForeignKey("deporte.id_deporte"))
-    id_rol           = Column(Integer, ForeignKey("rol.id_rol"), default=2)
+    rol              = Column(String(20), nullable=False)
+    fecha_creacion   = Column(Date)
+    id_deporte       = Column(String(50), ForeignKey("deporte.id_deporte"), nullable=False)
+    id_rol           = Column(Integer, ForeignKey("rol.id_rol"))
     sexo             = Column(CHAR(1))
 
 
 class Deporte(Base):
     __tablename__ = "deporte"
 
-    id_deporte = Column(String(50), primary_key=True)
-    nomDepo    = Column(String(20), nullable=False)
-
-
-class Zona(Base):
-    __tablename__ = "zona"
-
-    id_zona   = Column(String(20), primary_key=True)
-    nomZona   = Column(String(20), nullable=False)
-    municipio = Column(String(20), nullable=False)
+    id_deporte  = Column(String(50), primary_key=True)
+    nombre      = Column(String(50), nullable=False)
+    descripcion = Column(Text, nullable=False)
 
 
 class Instalacion(Base):
     __tablename__ = "instalacion"
 
     id_instalacion = Column(String(20), primary_key=True)
-    nomInst        = Column(String(50), nullable=False)
-    id_zona        = Column(String(20), ForeignKey("zona.id_zona"), nullable=False)
+    nombre         = Column(String(100), nullable=False)
+    direccion      = Column(String(100), nullable=False)
+    zona           = Column(String(20), nullable=False)
+    id_deporte     = Column(String(50), ForeignKey("deporte.id_deporte"), nullable=False)
+    admin_lugar    = Column(String(50), nullable=False)
 
 
-class Entrenador(Base):
-    __tablename__ = "entrenador"
+class HorarioDisponible(Base):
+    __tablename__ = "horario_disponible"
 
-    id_entrenador  = Column(String(20), primary_key=True)
-    anhos_exp      = Column(Integer)
-    id_instalacion = Column(String(20), ForeignKey("instalacion.id_instalacion"), nullable=False)
-
-
-class Horario(Base):
-    __tablename__ = "horarios"
-
-    id_horario     = Column(String(20), primary_key=True)
-    dias           = Column(Date, nullable=False)
-    hora_ini       = Column(Time, nullable=False)
-    hora_fin       = Column(Time, nullable=False)
-    id_instalacion = Column(String(20), ForeignKey("instalacion.id_instalacion"), nullable=False)
+    id_horario_disponible = Column(String(20), primary_key=True)
+    id_instalacion        = Column(String(20), ForeignKey("instalacion.id_instalacion"), nullable=False)
+    dia_semana            = Column(Integer, nullable=False)
+    hora_inicio           = Column(Time, nullable=False)
+    hora_fin              = Column(Time, nullable=False)
 
 
 class Equipo(Base):
     __tablename__ = "equipo"
 
-    id_equipo  = Column(String(20), primary_key=True)
-    nomEqui    = Column(String(50), nullable=False)
-    cant_int   = Column(Integer, nullable=False)
-    cat_gen    = Column(CHAR(1), nullable=False)
-    cat_edad   = Column(Integer, nullable=False)
-    id_deporte = Column(String(50), ForeignKey("deporte.id_deporte"), nullable=False)
+    id_equipo            = Column(String(20), primary_key=True)
+    nombre               = Column(String(50), nullable=False)
+    id_capitan           = Column(String(50), ForeignKey("usuario.id_usuario"), nullable=False)
+    cantidad_integrantes = Column(Integer, nullable=False)
+    categorizacion       = Column(String(20), nullable=False)
+    id_deporte           = Column(String(50), ForeignKey("deporte.id_deporte"), nullable=False)
+    nivel                = Column(String(20))
 
 
-class Publicacion(Base):
-    __tablename__ = "publicacion"
+class IntegranteEquipo(Base):
+    __tablename__ = "integrante_equipo"
 
-    id_publi    = Column(String(20), primary_key=True)
-    tipo        = Column(String(10), nullable=False)
-    titulo      = Column(Text, nullable=False)
-    ruta_img    = Column(String(100))
-    contenido   = Column(Text)
-    fecha_publi = Column(DateTime, nullable=False)
-    id_usuario  = Column(String(50), ForeignKey("usuario.id_usuario"))
-    id_equipo   = Column(String(20), ForeignKey("equipo.id_equipo"))
+    id_integrante_equipo = Column(String(20), primary_key=True)
+    id_equipo            = Column(String(20), ForeignKey("equipo.id_equipo"), nullable=False)
+    id_usuario           = Column(String(50), ForeignKey("usuario.id_usuario"), nullable=False)
+    rol_en_equipo        = Column(String(30), nullable=False)
 
 
 class Evento(Base):
     __tablename__ = "evento"
 
     id_evento      = Column(String(20), primary_key=True)
-    nombre         = Column(String(20), nullable=False)
-    fecha_inicio   = Column(Date, nullable=False)
-    descripcion    = Column(Text, nullable=False)
+    nombre         = Column(String(50), nullable=False)
     id_deporte     = Column(String(50), ForeignKey("deporte.id_deporte"), nullable=False)
+    fecha_inicio   = Column(Date, nullable=False)
     id_instalacion = Column(String(20), ForeignKey("instalacion.id_instalacion"), nullable=False)
     organizador    = Column(String(50), ForeignKey("usuario.id_usuario"), nullable=False)
+    descripcion    = Column(String(200))
+
+
+class ParticipanteEvento(Base):
+    __tablename__ = "participante_evento"
+
+    id_participante_evento = Column(String(20), primary_key=True)
+    id_evento              = Column(String(20), ForeignKey("evento.id_evento"), nullable=False)
+    id_usuario             = Column(String(50), ForeignKey("usuario.id_usuario"), nullable=False)
+    id_equipo              = Column(String(20), ForeignKey("equipo.id_equipo"), nullable=False)
+    estado                 = Column(String(20), nullable=False)
+
+
+class PerfilEntrenador(Base):
+    __tablename__ = "perfil_entrenador"
+
+    id_perfil_entrenador = Column(String(20), primary_key=True)
+    id_usuario           = Column(String(50), ForeignKey("usuario.id_usuario"), nullable=False)
+    anios_experiencia    = Column(Integer)
+    id_deporte           = Column(String(50), ForeignKey("deporte.id_deporte"), nullable=False)
+
+
+class Publicacion(Base):
+    __tablename__ = "publicacion"
+
+    id_publicacion = Column(String(20), primary_key=True)
+    tipo           = Column(String(20), nullable=False)
+    titulo         = Column(String(100), nullable=False)
+    contenido      = Column(Text, nullable=False)
+    id_deporte     = Column(String(50), ForeignKey("deporte.id_deporte"), nullable=False)
+    fecha          = Column(Date, nullable=False)
+    hora           = Column(Time, nullable=False)
 
 
 class Reserva(Base):
     __tablename__ = "reserva"
 
     id_reserva            = Column(String(20), primary_key=True)
-    id_usuario            = Column(String(50), ForeignKey("usuario.id_usuario"))
-    id_equipo             = Column(String(20), ForeignKey("equipo.id_equipo"))
+    id_usuario            = Column(String(50), ForeignKey("usuario.id_usuario"), nullable=False)
+    id_equipo             = Column(String(20), ForeignKey("equipo.id_equipo"), nullable=False)
     id_instalacion        = Column(String(20), ForeignKey("instalacion.id_instalacion"), nullable=False)
-    id_horario_disponible = Column(String(20), ForeignKey("horarios.id_horario"), nullable=False)
+    id_horario_disponible = Column(String(20), ForeignKey("horario_disponible.id_horario_disponible"), nullable=False)
     fecha_r               = Column(Date, nullable=False)
-
-
-class Inscripcion(Base):
-    __tablename__ = "inscripcion"
-
-    id_inscripcion = Column(String(20), primary_key=True)
-    id_equipo      = Column(String(20), ForeignKey("equipo.id_equipo"), nullable=False)
-    id_evento      = Column(String(20), ForeignKey("evento.id_evento"), nullable=False)
-
-
-class IntegranteEquipo(Base):
-    __tablename__ = "integrante_equipo"
-
-    rol_equipo = Column(String(30), nullable=False, primary_key=True)
-    id_usuario = Column(String(50), ForeignKey("usuario.id_usuario"), primary_key=True)
-    id_equipo  = Column(String(20), ForeignKey("equipo.id_equipo"), primary_key=True)
-
-
-class UsuarioDeporte(Base):
-    __tablename__ = "usuario_deporte"
-
-    id_usuario = Column(String(50), ForeignKey("usuario.id_usuario"), primary_key=True)
-    id_deporte = Column(String(50), ForeignKey("deporte.id_deporte"), primary_key=True)
-
-
-class EntrenadorDeporte(Base):
-    __tablename__ = "entrenador_deporte"
-
-    id_entrenador = Column(String(20), ForeignKey("entrenador.id_entrenador"), primary_key=True)
-    id_deporte    = Column(String(50), ForeignKey("deporte.id_deporte"), primary_key=True)
-
-
-class DeporteInstalacion(Base):
-    __tablename__ = "deporte_instalacion"
-
-    id_deporte     = Column(String(50), ForeignKey("deporte.id_deporte"), primary_key=True)
-    id_instalacion = Column(String(20), ForeignKey("instalacion.id_instalacion"), primary_key=True)

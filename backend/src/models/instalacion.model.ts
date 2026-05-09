@@ -15,7 +15,7 @@ export class Instalacion extends Entity {
     type: 'string',
     required: true,
   })
-  nomInst: string;
+  nombre: string;
 
   @property({
     type: 'string',

@@ -20,8 +20,9 @@ database_url = os.getenv(
 """
 database_url = os.getenv(
     "DATABASE_URL",
-    "postgresql://postgres:DET28DVMapgvwkIP@aws-1-us-east-2.pooler.supabase.com:5432/postgres"
+    "postgresql://postgres.xiqwgapmkxzjfcraeqzz:DET28DVMapgvwkIP@aws-1-us-east-2.pooler.supabase.com:5432/postgres"
 )
+
 try:
     engine = create_engine(database_url, pool_pre_ping=True)
     # Verificar conexión

@@ -42,7 +42,9 @@ def crear_usuario(datos: UsuarioCreate, db: Session = Depends(get_db)):
         contrasenha    = datos.contrasenha,
         nomUsu         = datos.nomUsu,
         telefono       = datos.telefono,
+        id_rol         = 2, # Rol de Usuario por defecto
         fecha_creacion = date.today()
+
     )
     db.add(nuevo)
     db.commit()

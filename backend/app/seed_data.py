@@ -1,4 +1,8 @@
 from datetime import date, datetime
+<<<<<<< ours
+=======
+from sqlalchemy import text
+>>>>>>> theirs
 from sqlalchemy.orm import Session
 
 from app.config.db import SessionLocal
@@ -7,12 +11,100 @@ from app.models.models import (
     Evento,
     Instalacion,
     ParticipanteEvento,
+<<<<<<< ours
+=======
+    Publicacion,
+>>>>>>> theirs
     Rol,
     Usuario,
     Zona,
 )
 
 
+<<<<<<< ours
+=======
+def ensure_schema_compatibility(db: Session) -> None:
+    """Apply safe Supabase schema patches required by the demo data.
+
+    SQLAlchemy's create_all creates missing tables but does not alter existing
+    Supabase columns. These statements are intentionally idempotent so Render can
+    run them on every startup without conflicts.
+    """
+    statements = [
+        "ALTER TABLE public.evento ALTER COLUMN \"nomEve\" TYPE VARCHAR(100)",
+        "ALTER TABLE public.publicacion ALTER COLUMN titulo TYPE VARCHAR(200)",
+        """
+        CREATE TABLE IF NOT EXISTS public.rol (
+            id_rol INTEGER PRIMARY KEY,
+            nombre VARCHAR(50) NOT NULL
+        )
+        """,
+        """
+        INSERT INTO public.rol (id_rol, nombre)
+        VALUES (1, 'Administrador'), (2, 'Usuario')
+        ON CONFLICT (id_rol) DO UPDATE SET nombre = EXCLUDED.nombre
+        """,
+        """
+        DO $$
+        DECLARE
+            seq_name text;
+        BEGIN
+            seq_name := pg_get_serial_sequence('public.rol', 'id_rol');
+            IF seq_name IS NOT NULL THEN
+                EXECUTE format(
+                    'SELECT setval(%L, GREATEST((SELECT COALESCE(MAX(id_rol), 1) FROM public.rol), 1), true)',
+                    seq_name
+                );
+            END IF;
+        END $$
+        """,
+        """
+        DO $$
+        BEGIN
+            IF NOT EXISTS (
+                SELECT 1
+                FROM information_schema.columns
+                WHERE table_schema = 'public'
+                  AND table_name = 'usuario'
+                  AND column_name = 'id_rol'
+            ) THEN
+                ALTER TABLE public.usuario ADD COLUMN id_rol INTEGER DEFAULT 2;
+            END IF;
+        END $$
+        """,
+        "UPDATE public.usuario SET id_rol = 2 WHERE id_rol IS NULL",
+        """
+        DO $$
+        BEGIN
+            IF NOT EXISTS (
+                SELECT 1
+                FROM pg_constraint
+                WHERE conname = 'fk_rol_usuario'
+            ) THEN
+                ALTER TABLE public.usuario
+                ADD CONSTRAINT fk_rol_usuario
+                FOREIGN KEY (id_rol) REFERENCES public.rol(id_rol);
+            END IF;
+        END $$
+        """,
+        """
+        CREATE TABLE IF NOT EXISTS public.participante_evento (
+            id_participante_evento VARCHAR(36) PRIMARY KEY,
+            id_evento VARCHAR(50) REFERENCES public.evento(id_evento),
+            id_usuario VARCHAR(50) REFERENCES public.usuario(id_usuario),
+            id_equipo VARCHAR(50) REFERENCES public.equipo(id_equipo),
+            estado VARCHAR(50) DEFAULT 'Inscrito'
+        )
+        """,
+        "ALTER TABLE public.participante_evento ALTER COLUMN estado TYPE VARCHAR(50)",
+    ]
+
+    for statement in statements:
+        db.execute(text(statement))
+    db.commit()
+
+
+>>>>>>> theirs
 def _upsert_usuario(db: Session, data: dict) -> None:
     usuario = db.query(Usuario).filter(Usuario.id_usuario == data["id_usuario"]).first()
     if usuario:
@@ -42,6 +134,11 @@ def seed_demo_data() -> None:
 
     db: Session = SessionLocal()
     try:
+<<<<<<< ours
+=======
+        ensure_schema_compatibility(db)
+
+>>>>>>> theirs
         roles_data = [
             {"id_rol": 1, "nombre": "Administrador"},
             {"id_rol": 2, "nombre": "Usuario"},
@@ -76,6 +173,10 @@ def seed_demo_data() -> None:
         db.commit()
 
         zonas_data = [
+<<<<<<< ours
+=======
+            {"id_zona": "Z-01", "nomZona": "Zona Norte", "municipio": "Cartagena"},
+>>>>>>> theirs
             {"id_zona": "ZNTE01", "nomZona": "Norte - Centro", "municipio": "Cartagena"},
             {"id_zona": "ZNTE02", "nomZona": "Norte Residencial", "municipio": "Cartagena"},
             {"id_zona": "ZCTO01", "nomZona": "Península Turística", "municipio": "Cartagena"},
@@ -99,7 +200,11 @@ def seed_demo_data() -> None:
                 "sexo": "M",
                 "municipio": "Cartagena",
                 "contrasenha": "admin123",
+<<<<<<< ours
                 "nomUsu": "AdminSport",
+=======
+                "nomUsu": "Admin SportPoint",
+>>>>>>> theirs
                 "telefono": "3000000000",
                 "id_rol": 1,
             },
@@ -164,6 +269,10 @@ def seed_demo_data() -> None:
         db.commit()
 
         instalaciones_data = [
+<<<<<<< ours
+=======
+            {"id_instalacion": "INST-01", "nomInst": "Polideportivo Norte", "id_zona": "Z-01"},
+>>>>>>> theirs
             {"id_instalacion": "I1", "nomInst": "Estadio Municipal de Cartagena", "id_zona": "ZNTE01"},
             {"id_instalacion": "I2", "nomInst": "Polideportivo Central", "id_zona": "ZCTO02"},
             {"id_instalacion": "I3", "nomInst": "Complejo Acuático Bolívar", "id_zona": "ZSUR01"},
@@ -178,6 +287,10 @@ def seed_demo_data() -> None:
         db.commit()
 
         eventos_data = [
+<<<<<<< ours
+=======
+            {"id_evento": "EV-NEW-01", "nomEve": "Torneo Fútbol 5", "descripcion": "Gran torneo de fútbol.", "id_deporte": "Fútbol", "fecha": "2026-06-05", "id_instalacion": "INST-01"},
+>>>>>>> theirs
             {"id_evento": "E1", "nomEve": "Torneo Barrial", "descripcion": "Liga local de fútbol en fase eliminatoria.", "id_deporte": "Fútbol", "fecha": "2026-05-10", "id_instalacion": "I1"},
             {"id_evento": "E2", "nomEve": "Basketball Cup", "descripcion": "Campeonato juvenil categoría 14-18 años.", "id_deporte": "Baloncesto", "fecha": "2026-05-12", "id_instalacion": "I2"},
             {"id_evento": "E3", "nomEve": "Nado Libre", "descripcion": "Competencia en piscina olímpica.", "id_deporte": "Natación", "fecha": "2026-05-15", "id_instalacion": "I3"},
@@ -238,6 +351,35 @@ def seed_demo_data() -> None:
                 ))
         db.commit()
 
+<<<<<<< ours
+=======
+        publicaciones_data = [
+            {
+                "id_publi": "PUB-01",
+                "tipo": "Noticia",
+                "titulo": "¡Nuevas Reservas!",
+                "ruta_img": "assets/photos/patinadores_montemaria.jpg",
+                "contenido": "Ya puedes reservar cupos individuales.",
+                "fecha_publi": datetime.now(),
+                "id_usuario": "admin-001",
+                "id_equipo": None,
+            }
+        ]
+        for publi_data in publicaciones_data:
+            publicacion = db.query(Publicacion).filter(Publicacion.id_publi == publi_data["id_publi"]).first()
+            if publicacion:
+                publicacion.tipo = publi_data["tipo"]
+                publicacion.titulo = publi_data["titulo"]
+                publicacion.ruta_img = publi_data["ruta_img"]
+                publicacion.contenido = publi_data["contenido"]
+                publicacion.fecha_publi = publi_data["fecha_publi"]
+                publicacion.id_usuario = publi_data["id_usuario"]
+                publicacion.id_equipo = publi_data["id_equipo"]
+            else:
+                db.add(Publicacion(**publi_data))
+        db.commit()
+
+>>>>>>> theirs
         print("Seed demo SportPoint sincronizado correctamente.")
     except Exception as exc:
         db.rollback()

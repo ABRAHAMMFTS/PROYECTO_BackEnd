@@ -1,5 +1,7 @@
 import { Component, signal, OnInit, OnDestroy, inject, Inject, PLATFORM_ID, ChangeDetectorRef, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { SafeUrlPipe } from './pipes/safe-url.pipe';
+
 import { FormsModule } from '@angular/forms';
 import { isPlatformBrowser } from '@angular/common';
 import { ApiService, Evento } from './services/api.service';
@@ -17,9 +19,11 @@ interface PerfilUsuario {
 }
 
 @Component({
+
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SafeUrlPipe],
+
   templateUrl: './app.html',
   styleUrls: ['./app.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -70,6 +74,9 @@ export class App implements OnInit, OnDestroy {
     nombre_equipo: '',
     id_rol: 0
   });
+
+  adminPanelUrl = 'http://localhost:5173'; // Cambiar por la URL de Vercel cuando se despliegue el panel
+
 
 
   // Datos de formularios

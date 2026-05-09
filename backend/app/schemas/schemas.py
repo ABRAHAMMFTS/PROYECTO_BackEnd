@@ -16,8 +16,12 @@ class UsuarioCreate(UsuarioBase):
 
 class UsuarioRead(UsuarioBase):
     id_usuario:      str
+<<<<<<< ours
     id_rol:          Optional[int] = 2
 
+=======
+    id_rol:          int
+>>>>>>> theirs
     fecha_creacion:  date
     class Config:
         from_attributes = True

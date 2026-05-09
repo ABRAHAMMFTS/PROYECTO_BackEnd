@@ -9,7 +9,7 @@ class Rol(Base):
     __tablename__ = "rol"  
 
     id_rol  = Column(Integer, primary_key=True, autoincrement=True)
-    nombre  = Column(String(20), nullable=False)
+    nombre  = Column(String(50), nullable=False)
 
 
 class Usuario(Base):
@@ -98,7 +98,7 @@ class Evento(Base):
     __tablename__ = "evento"
 
     id_evento      = Column(String(20), primary_key=True)
-    nomEve         = Column(String(20), nullable=False)
+    nomEve         = Column(String(100), nullable=False)
     fecha_ini      = Column(Date, nullable=False)
     fecha_fin      = Column(Date, nullable=False)
     descripcion    = Column(Text, nullable=False)
@@ -150,7 +150,7 @@ class ParticipanteEvento(Base):
     id_evento              = Column(String(20), ForeignKey("evento.id_evento"), nullable=False)
     id_usuario             = Column(String(50), ForeignKey("usuario.id_usuario"), nullable=False)
     id_equipo              = Column(String(20), ForeignKey("equipo.id_equipo"), nullable=True)
-    estado                 = Column(String(20), nullable=False, default="Inscrito")
+    estado                 = Column(String(50), nullable=False, default="Inscrito")
 
 
 

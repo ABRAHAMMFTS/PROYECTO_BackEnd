@@ -13,12 +13,18 @@ class ParticipanteCreate(BaseModel):
     id_usuario: str
     id_equipo: Optional[str] = None
 <<<<<<< ours
+<<<<<<< ours
 =======
+=======
+>>>>>>> theirs
 
 @router.get("/")
 def listar_todos_participantes(db: Session = Depends(get_db)):
     return db.query(ParticipanteEvento).all()
 
+<<<<<<< ours
+>>>>>>> theirs
+=======
 >>>>>>> theirs
 
 @router.post("/")

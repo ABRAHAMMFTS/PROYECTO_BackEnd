@@ -131,6 +131,11 @@ export class ApiService {
     return this.delete<T>(resource);
   }
 
+  login(credentials: any): Observable<any> {
+    return this.post<any>('usuarios/login', credentials);
+  }
+
+
   private normalizeEvento(eventoApi: EventoApi): Evento {
     return {
       id: eventoApi.id_evento || '0',

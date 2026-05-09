@@ -15,16 +15,16 @@ class Rol(Base):
 class Usuario(Base):
     __tablename__ = "usuario"
 
-    id_usuario       = Column(String(10), primary_key=True)
-    correo           = Column(String(50), nullable=False)
-    contrasenia_hash = Column(String(100), nullable=False)
-    nombre_completo  = Column(String(50), nullable=False)
-    telefono         = Column(String(15))
-    rol              = Column(String(2))
-    fecha_creacion   = Column(Date, nullable=False)
-    id_deporte       = Column(String(15), ForeignKey("deporte.id_deporte"))
-    id_rol           = Column(Integer, ForeignKey("rol.id_rol"), default=2)
-    sexo             = Column(CHAR(1))
+    id_usuario     = Column(String(36), primary_key=True)
+    correo         = Column(String(50), nullable=False)
+    edad           = Column(Integer, nullable=False)
+    sexo           = Column(CHAR(1), nullable=False)
+    municipio      = Column(String(20), nullable=False)
+    contrasenha    = Column(String(20), nullable=False)
+    nomUsu         = Column(String(50), nullable=False)
+    telefono       = Column(String(11))
+    fecha_creacion = Column(Date, nullable=False)
+
 
 
 class Deporte(Base):

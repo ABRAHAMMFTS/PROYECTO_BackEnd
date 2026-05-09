@@ -340,46 +340,47 @@
           <p class="loginredirectlink">¿Ya tienes una cuenta? <a href="#" id="showformLoginLink" (click)="toggleSignup(); toggleLogin(); $event.preventDefault()">Iniciar Sesión</a></p>
           <div class="field-group">
             <label for="name" id="lablemargin">Nombre de Usuario</label>
-            <input type="text" id="name" placeholder="Ingrese su nombre de usuario" required>
+            <input type="text" id="name" name="nomUsu" [(ngModel)]="signupData.nomUsu" placeholder="Ingrese su nombre de usuario" required>
           </div>
           <div class="signflhorizontal">
             <div class="field-group">
               <label for="age" id="lablemargin">Edad</label>
-              <input type="number" id="age" min="5" max="100" placeholder="Ingrese su edad" required>
+              <input type="number" id="age" name="edad" [(ngModel)]="signupData.edad" min="5" max="100" placeholder="Ingrese su edad" required>
             </div>
             <div class="field-group">
               <label for="sexo" class="lablemargin">Sexo</label>
-              <select id="sexo" required>
+              <select id="sexo" name="sexo" [(ngModel)]="signupData.sexo" required>
                 <option value="">Selecciona tu sexo</option>
-                <option value="femenino">Femenino</option>
-                <option value="masculino">Masculino</option>
+                <option value="F">Femenino</option>
+                <option value="M">Masculino</option>
               </select>
             </div>
           </div>
           <div class="field-group">
             <label for="municipio" class="lablemargin">Municipio</label>
-            <select id="municipio" required>
+            <select id="municipio" name="municipio" [(ngModel)]="signupData.municipio" required>
               <option value="">Selecciona tu municipio</option>
-              <option *ngFor="let m of municipios" [value]="m.nombre">{{ m.nombre }}</option>
+              <option *ngFor="let m of municipios" [value]="m.nombre.toLowerCase().replace(' ', '')">{{ m.nombre }}</option>
             </select>
           </div>
           <div class="field-group">
             <label for="tel" id="lablemargin">Teléfono</label>
-            <input type="tel" id="tel" placeholder="Ingrese su número de teléfono" required>
+            <input type="tel" id="tel" name="telefono" [(ngModel)]="signupData.telefono" placeholder="Ingrese su número de teléfono" required>
           </div>
           <div class="signflhorizontal">
             <div class="field-group">
               <label for="signup-email" id="lablemargin">Email</label>
-              <input type="email" id="signup-email" placeholder="Ingrese su email" required>
+              <input type="email" id="signup-email" name="correo" [(ngModel)]="signupData.correo" placeholder="Ingrese su email" required>
             </div>
             <div class="field-group">
               <label for="signup-password" id="lablemargin">Contraseña</label>
               <div class="input-eye-wrapper">
-                <input type="password" id="signup-password" placeholder="Ingrese su contraseña" required>
+                <input type="password" id="signup-password" name="contrasenha" [(ngModel)]="signupData.contrasenha" placeholder="Ingrese su contraseña" required>
                 <span class="toggle-eye">👁️</span>
               </div>
             </div>
           </div>
+
           <div>
             <button type="submit">Crear Cuenta</button>
           </div>
@@ -408,15 +409,16 @@
           <p class="loginredirectlink">¿No tienes cuenta? <a href="#" id="showformSignupLink" (click)="toggleLogin(); toggleSignup(); $event.preventDefault()">Crear Cuenta</a></p>
           <div class="field-group">
             <label for="login-email">Email</label>
-            <input type="email" id="login-email" placeholder="Ingrese su email" required>
+            <input type="email" id="login-email" name="login_correo" [(ngModel)]="loginData.correo" placeholder="Ingrese su email" required>
           </div>
           <div class="field-group">
             <label for="login-password">Contraseña</label>
             <div class="input-eye-wrapper">
-              <input type="password" id="login-password" placeholder="Ingrese su contraseña" required>
+              <input type="password" id="login-password" name="login_pass" [(ngModel)]="loginData.contrasenha" placeholder="Ingrese su contraseña" required>
               <span class="toggle-eye">👁️</span>
             </div>
           </div>
+
           <div>
             <button type="submit">Iniciar Sesión</button>
           </div>

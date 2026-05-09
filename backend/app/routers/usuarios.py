@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.config.db import get_db
 from app.models.models import Usuario
-from app.schemas.schemas import UsuarioCreate, UsuarioRead
+from app.schemas.schemas import UsuarioCreate, UsuarioRead, LoginRequest, LoginResponse
 import uuid
 from datetime import date
 
@@ -47,6 +47,23 @@ def crear_usuario(datos: UsuarioCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(nuevo)
     return nuevo
+
+
+# Login
+@router.post("/login", response_model=LoginResponse)
+def login(datos: LoginRequest, db: Session = Depends(get_db)):
+    usuario = db.query(Usuario).filter(Usuario.correo == datos.correo).first()
+    
+    if not usuario or usuario.contrasenha != datos.contrasenha:
+        raise HTTPException(status_code=401, detail="Correo o contraseña incorrectos")
+
+    return LoginResponse(
+        access_token="fake-jwt-token",
+        token_type="bearer",
+        id_rol=2,
+        nomUsu=usuario.nomUsu
+    )
+
 
 
 # actualizar 

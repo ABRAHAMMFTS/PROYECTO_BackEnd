@@ -56,6 +56,23 @@ export class App implements OnInit, OnDestroy {
     nombre_equipo: ''
   });
 
+  // Datos de formularios
+  signupData = {
+    nomUsu: '',
+    edad: 18,
+    sexo: '',
+    municipio: '',
+    telefono: '',
+    correo: '',
+    contrasenha: ''
+  };
+
+  loginData = {
+    correo: '',
+    contrasenha: ''
+  };
+
+
   // Estadísticas animadas
   statEventos = signal(0);
   statEspacios = signal(0);
@@ -126,13 +143,34 @@ export class App implements OnInit, OnDestroy {
   }
   crearCuenta(event: Event) {
     event.preventDefault();
-    this.showSignup.set(false);
-    this.showLogin.set(true);
+    this.apiService.createResource('usuarios', this.signupData).subscribe({
+      next: () => {
+        alert('Cuenta creada exitosamente. Ahora puedes iniciar sesión.');
+        this.showSignup.set(false);
+        this.showLogin.set(true);
+      },
+      error: (err) => {
+        alert('Error al crear cuenta: ' + (err.error?.detail || 'Inténtalo de nuevo'));
+      }
+    });
   }
+
   iniciarSesion(event: Event) {
     event.preventDefault();
-    this.showLogin.set(false);
+    this.apiService.login(this.loginData).subscribe({
+      next: (res) => {
+        alert('Bienvenido de nuevo, ' + res.nomUsu);
+        this.showLogin.set(false);
+        // Aquí se podría guardar el token en localStorage y actualizar el estado de login
+        this.perfilUsuario.update(p => ({ ...p, username: res.nomUsu }));
+        this.changeSection('Perfil');
+      },
+      error: (err) => {
+        alert('Error al iniciar sesión: ' + (err.error?.detail || 'Credenciales inválidas'));
+      }
+    });
   }
+
 
   // Cargar eventos
   private cargarEventos() {

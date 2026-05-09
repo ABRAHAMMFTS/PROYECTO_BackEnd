@@ -5,21 +5,21 @@ from datetime import date, datetime, time
 
 class UsuarioBase(BaseModel):
     correo:          str
-    nombre_completo: str
+    nomUsu:          str
+    edad:            int
+    sexo:            str
+    municipio:       str
     telefono:        Optional[str] = None
-    rol:             Optional[str] = None
-    fecha_creacion:  date
-    id_deporte:      Optional[str] = None
-    sexo:            Optional[str] = None
 
 class UsuarioCreate(UsuarioBase):
-    contrasenia_hash: str
+    contrasenha:     str
 
 class UsuarioRead(UsuarioBase):
-    id_usuario: str
-    id_rol:     Optional[int] = None
+    id_usuario:      str
+    fecha_creacion:  date
     class Config:
         from_attributes = True
+
 
 
 class DeporteBase(BaseModel):

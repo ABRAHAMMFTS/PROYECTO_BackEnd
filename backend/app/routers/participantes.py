@@ -99,3 +99,27 @@ def inscribir_usuario(
 @router.get("/evento/{id_evento}")
 def listar_participantes(id_evento: str, db: Session = Depends(get_db)):
     return db.query(ParticipanteEvento).filter(ParticipanteEvento.id_evento == id_evento).all()
+
+
+@router.get("/usuario/{id_usuario}")
+def listar_eventos_usuario(id_usuario: str, db: Session = Depends(get_db)):
+    """Devuelve las inscripciones de un usuario con los datos del evento."""
+    participaciones = (
+        db.query(ParticipanteEvento)
+        .filter(ParticipanteEvento.id_usuario == id_usuario)
+        .all()
+    )
+    resultado = []
+    for p in participaciones:
+        evento = db.query(Evento).filter(Evento.id_evento == p.id_evento).first()
+        resultado.append({
+            "id_participante_evento": p.id_participante_evento,
+            "id_evento": p.id_evento,
+            "id_usuario": p.id_usuario,
+            "estado": p.estado,
+            "nombre_evento": evento.nomEve if evento else "Evento desconocido",
+            "descripcion": evento.descripcion if evento else "",
+            "deporte": evento.id_deporte if evento else "",
+            "fecha": str(evento.fecha_ini) if evento else "",
+        })
+    return resultado

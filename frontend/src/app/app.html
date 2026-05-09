@@ -169,7 +169,11 @@
               <span class="tag" *ngIf="eventoGuardado(selectedEvento()?.id)">Guardado</span>
             </div>
             <div class="modal-actions">
-              <button class="btn-primary" type="button" (click)="reservarCupo(selectedEvento()?.id ?? null)">Reservar cupo</button>
+              <button class="btn-primary" type="button" 
+                      [disabled]="eventoReservado(selectedEvento()?.id)"
+                      (click)="reservarCupo(selectedEvento()?.id ?? null)">
+                {{ eventoReservado(selectedEvento()?.id) ? 'Ya reservado ✓' : 'Reservar cupo' }}
+              </button>
               <button class="btn-secondary" type="button" (click)="guardarEvento(selectedEvento()?.id ?? null)">
                 {{ eventoGuardado(selectedEvento()?.id) ? 'Guardado' : 'Guardar' }}
               </button>
@@ -342,11 +346,33 @@
             <button class="tab" [class.active]="activeTab() === 'Favoritos'" (click)="changeTab('Favoritos')">Mis Favoritos</button>
           </div>
           <div class="tab-content">
-            <div *ngIf="activeTab() === 'Reservas'">
-              Tus reservas aparecerán aquí después de confirmar cupos en eventos.
+            <div *ngIf="activeTab() === 'Reservas'" class="favoritos-list">
+              <div *ngIf="!isAuthenticated()">
+                Inicia sesión para ver tus reservas.
+              </div>
+              <div *ngIf="isAuthenticated() && misReservas().length === 0">
+                Aún no tienes reservas. ¡Explora los eventos y reserva tu cupo!
+              </div>
+              <div class="favorito-item" *ngFor="let reserva of misReservas()">
+                <img [src]="imagenesDeporte[reserva.deporte] || 'assets/img/logo_color.png'" [alt]="reserva.deporte">
+                <div>
+                  <strong>{{ reserva.nombre_evento }}</strong>
+                  <span>{{ reserva.deporte }} · {{ reserva.fecha }}</span>
+                  <span class="tag" style="font-size: 11px; margin-top: 4px;">{{ reserva.estado }}</span>
+                </div>
+              </div>
             </div>
-            <div *ngIf="activeTab() === 'Eventos'">
-              Consulta los eventos en los que participas desde el panel de administrador.
+            <div *ngIf="activeTab() === 'Eventos'" class="favoritos-list">
+              <div *ngIf="eventosReservados.length === 0">
+                No estás participando en ningún evento todavía.
+              </div>
+              <div class="favorito-item" *ngFor="let evento of eventosReservados" (click)="abrirModal(evento)">
+                <img [src]="imagenEvento(evento)" [alt]="evento.deporte">
+                <div>
+                  <strong>{{ evento.nombre }}</strong>
+                  <span>{{ evento.deporte }} · {{ evento.fecha }}</span>
+                </div>
+              </div>
             </div>
             <div *ngIf="activeTab() === 'Favoritos'" class="favoritos-list">
               <div *ngIf="eventosGuardados.length === 0">Aún no tienes eventos guardados.</div>

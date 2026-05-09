@@ -42,6 +42,7 @@ export class App implements OnInit, OnDestroy {
   selectedEvento = signal<Evento | null>(null);
   isAuthenticated = signal(false);
   savedEventIds = signal<string[]>([]);
+  misReservas = signal<any[]>([]);
 
   // Carrusel de imágenes hero
   slides = signal([
@@ -151,6 +152,7 @@ export class App implements OnInit, OnDestroy {
     this.cargarEventos();
     this.cargarInstalaciones();
     this.cargarPerfil();
+    this.cargarReservasUsuario();
   }
 
   // Navegación
@@ -191,6 +193,7 @@ export class App implements OnInit, OnDestroy {
     localStorage.removeItem('eventos_guardados');
     this.isAuthenticated.set(false);
     this.savedEventIds.set([]);
+    this.misReservas.set([]);
     this.perfilUsuario.set({
       username: 'Invitado',
       edad: 0,
@@ -243,6 +246,7 @@ export class App implements OnInit, OnDestroy {
         localStorage.setItem('id_rol', res.id_rol.toString());
         localStorage.setItem('nomUsu', res.nomUsu);
         this.isAuthenticated.set(true);
+        this.cargarReservasUsuario();
 
         this.changeSection('Perfil');
       },
@@ -267,10 +271,11 @@ export class App implements OnInit, OnDestroy {
 
     this.apiService.inscribirEnEvento(String(id_evento), id_usuario).subscribe({
       next: (res: any) => {
-        const mensaje = res?.pendiente_sincronizacion
-          ? '¡Cupo reservado! Nota: quedó guardado localmente mientras se publica el endpoint de participantes en el backend.'
+        const mensaje = res?.ya_inscrito
+          ? 'Ya tenías un cupo reservado para este evento'
           : '¡Cupo reservado con éxito!';
         alert(mensaje);
+        this.cargarReservasUsuario();
         this.cerrarModal();
       },
       error: (err) => {
@@ -401,6 +406,34 @@ export class App implements OnInit, OnDestroy {
         });
       }
     });
+  }
+
+  // Cargar reservas del usuario desde la BD
+  private cargarReservasUsuario() {
+    const idUsuario = localStorage.getItem('id_usuario');
+    if (!idUsuario) return;
+
+    this.apiService.getReservasUsuario(idUsuario).subscribe({
+      next: (data) => {
+        this.misReservas.set(data);
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.misReservas.set([]);
+      }
+    });
+  }
+
+  get eventosReservados() {
+    const reservaIds = this.misReservas().map(r => r.id_evento);
+    return this.eventosProximos().concat(this.eventosCercanos()).filter((evento, index, arr) =>
+      reservaIds.includes(String(evento.id)) && arr.findIndex((item) => String(item.id) === String(evento.id)) === index
+    );
+  }
+
+  eventoReservado(id_evento: string | number | null | undefined): boolean {
+    if (id_evento === null || id_evento === undefined) return false;
+    return this.misReservas().some(r => r.id_evento === String(id_evento));
   }
 
   // Resto de métodos (scroll, filtros, etc.)

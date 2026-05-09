@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 export interface Evento {
@@ -142,48 +142,12 @@ export class ApiService {
     return this.post<any>('usuarios/login', credentials);
   }
 
-  inscribirEnEvento(id_evento: string, id_usuario: string) {
-    const body = { id_evento, id_usuario };
-
-    return this.post('participantes/', body).pipe(
-      catchError((error) => {
-        if (error.status !== 404) {
-          throw error;
-        }
-
-        return this.post('participantes', body).pipe(
-          catchError((retryError) => {
-            if (retryError.status !== 404) {
-              throw retryError;
-            }
-
-            return of(this.guardarReservaLocal(id_evento, id_usuario));
-          })
-        );
-      })
-    );
+  inscribirEnEvento(id_evento: string, id_usuario: string): Observable<any> {
+    return this.post<any>('participantes/', { id_evento, id_usuario });
   }
 
-  private guardarReservaLocal(id_evento: string, id_usuario: string) {
-    const reserva = {
-      id: `${id_usuario}-${id_evento}`,
-      id_evento,
-      id_usuario,
-      fecha: new Date().toISOString(),
-      pendiente_sincronizacion: true
-    };
-
-    const reservas = JSON.parse(localStorage.getItem('reservas_eventos') || '[]');
-    const existe = reservas.some((item: any) => item.id === reserva.id);
-    if (!existe) {
-      localStorage.setItem('reservas_eventos', JSON.stringify([...reservas, reserva]));
-    }
-
-    return {
-      mensaje: 'Cupo reservado localmente. Se sincronizará cuando el backend publique el endpoint de participantes.',
-      id: reserva.id,
-      pendiente_sincronizacion: true
-    };
+  getReservasUsuario(id_usuario: string): Observable<any[]> {
+    return this.get<any[]>(`participantes/usuario/${id_usuario}`);
   }
 
   private normalizeEvento(eventoApi: EventoApi): Evento {

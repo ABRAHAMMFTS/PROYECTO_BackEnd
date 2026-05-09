@@ -23,7 +23,9 @@ class Usuario(Base):
     contrasenha    = Column(String(20), nullable=False)
     nomUsu         = Column(String(50), nullable=False)
     telefono       = Column(String(11))
+    id_rol         = Column(Integer, ForeignKey("rol.id_rol"), default=2) # 2 = Usuario normal
     fecha_creacion = Column(Date, nullable=False)
+
 
 
 
@@ -139,6 +141,18 @@ class UsuarioDeporte(Base):
 
     id_usuario = Column(String(50), ForeignKey("usuario.id_usuario"), primary_key=True)
     id_deporte = Column(String(50), ForeignKey("deporte.id_deporte"), primary_key=True)
+
+
+class ParticipanteEvento(Base):
+    __tablename__ = "participante_evento"
+
+    id_participante_evento = Column(String(36), primary_key=True)
+    id_evento              = Column(String(20), ForeignKey("evento.id_evento"), nullable=False)
+    id_usuario             = Column(String(50), ForeignKey("usuario.id_usuario"), nullable=False)
+    id_equipo              = Column(String(20), ForeignKey("equipo.id_equipo"), nullable=True)
+    estado                 = Column(String(20), nullable=False, default="Inscrito")
+
+
 
 
 class EntrenadorDeporte(Base):

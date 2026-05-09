@@ -1,6 +1,4 @@
-# SportPoint API - CORS Adjustment v1.1
 from fastapi import FastAPI
-
 from fastapi.middleware.cors import CORSMiddleware
 from app.config.db import Base, engine
 
@@ -11,7 +9,7 @@ from app.models.models import *
 from app.routers import (
     usuarios, deporte, zona, instalacion,
     entrenador, horario, equipo, publicacion,
-    evento, reserva, inscripcion
+    evento, reserva, inscripcion, auth, participantes
 )
 
 app = FastAPI(title="SportPoint API", version="1.0.0")
@@ -27,6 +25,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(auth.router)
 app.include_router(usuarios.router)
 app.include_router(deporte.router)
 app.include_router(zona.router)
@@ -38,5 +37,4 @@ app.include_router(publicacion.router)
 app.include_router(evento.router)
 app.include_router(reserva.router)
 app.include_router(inscripcion.router)
-
-
+app.include_router(participantes.router)

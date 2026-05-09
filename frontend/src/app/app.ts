@@ -53,8 +53,10 @@ export class App implements OnInit, OnDestroy {
     genero: '...',
     instagram_url: '',
     tiktok_url: '',
-    nombre_equipo: ''
+    nombre_equipo: '',
+    id_rol: 0
   });
+
 
   // Datos de formularios
   signupData = {
@@ -161,8 +163,17 @@ export class App implements OnInit, OnDestroy {
       next: (res) => {
         alert('Bienvenido de nuevo, ' + res.nomUsu);
         this.showLogin.set(false);
-        // Aquí se podría guardar el token en localStorage y actualizar el estado de login
-        this.perfilUsuario.update(p => ({ ...p, username: res.nomUsu }));
+        // Guardar ID, nombre y rol en el perfil
+        const isAdmin = res.id_rol === 1;
+        this.perfilUsuario.update(p => ({ 
+          ...p, 
+          username: res.nomUsu, 
+          id_usuario: res.id_usuario,
+          id_rol: res.id_rol 
+        }));
+        localStorage.setItem('id_usuario', res.id_usuario);
+        localStorage.setItem('id_rol', res.id_rol.toString());
+
         this.changeSection('Perfil');
       },
       error: (err) => {
@@ -170,6 +181,26 @@ export class App implements OnInit, OnDestroy {
       }
     });
   }
+
+  reservarCupo(id_evento: string) {
+    const id_usuario = localStorage.getItem('id_usuario');
+    if (!id_usuario) {
+      alert('Debes iniciar sesión para reservar un cupo');
+      this.showLogin.set(true);
+      return;
+    }
+
+    this.apiService.inscribirEnEvento(id_evento, id_usuario).subscribe({
+      next: () => {
+        alert('¡Cupo reservado con éxito!');
+        this.cerrarModal();
+      },
+      error: (err) => {
+        alert('Error al reservar cupo: ' + (err.error?.detail || 'Inténtalo de nuevo'));
+      }
+    });
+  }
+
 
 
   // Cargar eventos

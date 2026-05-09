@@ -135,6 +135,12 @@ export class ApiService {
     return this.post<any>('usuarios/login', credentials);
   }
 
+  inscribirEnEvento(id_evento: string, id_usuario: string) {
+    return this.post('participantes/', {
+      id_evento: id_evento,
+      id_usuario: id_usuario
+    });
+  }
 
   private normalizeEvento(eventoApi: EventoApi): Evento {
     return {

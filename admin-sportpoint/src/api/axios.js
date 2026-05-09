@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8000',
+  baseURL: import.meta.env.VITE_API_URL || 'https://backend-fastapi-8uxl.onrender.com',
+
   headers: {
     'Content-Type': 'application/json',
   },

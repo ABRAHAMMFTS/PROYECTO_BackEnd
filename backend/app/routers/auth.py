@@ -15,7 +15,7 @@ def login(datos: LoginRequest, db: Session = Depends(get_db)):
     if not usuario:
         raise HTTPException(status_code=401, detail="Correo o contraseña incorrectos")
 
-    if not verify_password(datos.contrasenha, usuario.contrasenia_hash):
+    if usuario.contrasenha != datos.contrasenha:
         raise HTTPException(status_code=401, detail="Correo o contraseña incorrectos")
 
     token = create_access_token(data={"sub": usuario.id_usuario})
@@ -24,8 +24,9 @@ def login(datos: LoginRequest, db: Session = Depends(get_db)):
         "access_token":    token,
         "token_type":      "bearer",
         "id_rol":          usuario.id_rol,
-        "nombre_completo": usuario.nombre_completo
+        "nomUsu":          usuario.nomUsu
     }
+
 
 
 @router.get("/me")

@@ -1,64 +1,75 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.config.db import get_db
-from app.models.models import Evento
-from app.schemas.schemas import EventoCreate, EventoRead
+from app.models.models import Instalacion, Zona
+from app.schemas.schemas import InstalacionCreate, InstalacionRead
 import uuid
 
-router = APIRouter(prefix="/eventos", tags=["Eventos"])
+router = APIRouter(prefix="/instalaciones", tags=["Instalaciones"])
 
 
-@router.get("/", response_model=list[EventoRead])
-def listar_eventos(db: Session = Depends(get_db)):
-    return db.query(Evento).all()
+@router.get("/", response_model=list[InstalacionRead])
+def listar_instalaciones(db: Session = Depends(get_db)):
+    return db.query(Instalacion).all()
 
 
-@router.get("/{id_evento}", response_model=EventoRead)
-def obtener_evento(id_evento: str, db: Session = Depends(get_db)):
-    evento = db.query(Evento).filter(Evento.id_evento == id_evento).first()
-    if not evento:
-        raise HTTPException(status_code=404, detail="Evento no encontrado")
-    return evento
+@router.get("/{id_instalacion}", response_model=InstalacionRead)
+def obtener_instalacion(id_instalacion: str, db: Session = Depends(get_db)):
+    instalacion = db.query(Instalacion).filter(
+        Instalacion.id_instalacion == id_instalacion
+    ).first()
+    if not instalacion:
+        raise HTTPException(status_code=404, detail="Instalación no encontrada")
+    return instalacion
 
 
-@router.post("/", response_model=EventoRead)
-def crear_evento(datos: EventoCreate, db: Session = Depends(get_db)):
-    nuevo = Evento(
-        id_evento      = str(uuid.uuid4())[:20],
-        nombre         = datos.nombre,
-        id_deporte     = datos.id_deporte,
-        fecha_inicio   = datos.fecha_inicio,
-        id_instalacion = datos.id_instalacion,
-        organizador    = datos.organizador,
-        descripcion    = datos.descripcion
+@router.post("/", response_model=InstalacionRead, status_code=status.HTTP_201_CREATED)
+def crear_instalacion(datos: InstalacionCreate, db: Session = Depends(get_db)):
+    zona = db.query(Zona).filter(Zona.id_zona == datos.id_zona).first()
+    if not zona:
+        raise HTTPException(status_code=404, detail="Zona no encontrada")
+
+    nueva = Instalacion(
+        id_instalacion=datos.id_instalacion or str(uuid.uuid4())[:20],
+        nomInst=datos.nomInst,
+        id_zona=datos.id_zona,
     )
-    db.add(nuevo)
+    db.add(nueva)
     db.commit()
-    db.refresh(nuevo)
-    return nuevo
+    db.refresh(nueva)
+    return nueva
 
 
-@router.put("/{id_evento}", response_model=EventoRead)
-def actualizar_evento(id_evento: str, datos: EventoCreate, db: Session = Depends(get_db)):
-    evento = db.query(Evento).filter(Evento.id_evento == id_evento).first()
-    if not evento:
-        raise HTTPException(status_code=404, detail="Evento no encontrado")
-    evento.nombre         = datos.nombre
-    evento.id_deporte     = datos.id_deporte
-    evento.fecha_inicio   = datos.fecha_inicio
-    evento.id_instalacion = datos.id_instalacion
-    evento.organizador    = datos.organizador
-    evento.descripcion    = datos.descripcion
+@router.put("/{id_instalacion}", response_model=InstalacionRead)
+def actualizar_instalacion(
+    id_instalacion: str,
+    datos: InstalacionCreate,
+    db: Session = Depends(get_db),
+):
+    instalacion = db.query(Instalacion).filter(
+        Instalacion.id_instalacion == id_instalacion
+    ).first()
+    if not instalacion:
+        raise HTTPException(status_code=404, detail="Instalación no encontrada")
+
+    zona = db.query(Zona).filter(Zona.id_zona == datos.id_zona).first()
+    if not zona:
+        raise HTTPException(status_code=404, detail="Zona no encontrada")
+
+    instalacion.nomInst = datos.nomInst
+    instalacion.id_zona = datos.id_zona
     db.commit()
-    db.refresh(evento)
-    return evento
+    db.refresh(instalacion)
+    return instalacion
 
 
-@router.delete("/{id_evento}")
-def eliminar_evento(id_evento: str, db: Session = Depends(get_db)):
-    evento = db.query(Evento).filter(Evento.id_evento == id_evento).first()
-    if not evento:
-        raise HTTPException(status_code=404, detail="Evento no encontrado")
-    db.delete(evento)
+@router.delete("/{id_instalacion}")
+def eliminar_instalacion(id_instalacion: str, db: Session = Depends(get_db)):
+    instalacion = db.query(Instalacion).filter(
+        Instalacion.id_instalacion == id_instalacion
+    ).first()
+    if not instalacion:
+        raise HTTPException(status_code=404, detail="Instalación no encontrada")
+    db.delete(instalacion)
     db.commit()
-    return {"mensaje": f"Evento {id_evento} eliminado correctamente"}
+    return {"mensaje": f"Instalación {id_instalacion} eliminada correctamente"}

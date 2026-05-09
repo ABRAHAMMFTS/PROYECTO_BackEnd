@@ -266,8 +266,11 @@ export class App implements OnInit, OnDestroy {
     }
 
     this.apiService.inscribirEnEvento(String(id_evento), id_usuario).subscribe({
-      next: () => {
-        alert('¡Cupo reservado con éxito!');
+      next: (res: any) => {
+        const mensaje = res?.pendiente_sincronizacion
+          ? '¡Cupo reservado! Nota: quedó guardado localmente mientras se publica el endpoint de participantes en el backend.'
+          : '¡Cupo reservado con éxito!';
+        alert(mensaje);
         this.cerrarModal();
       },
       error: (err) => {

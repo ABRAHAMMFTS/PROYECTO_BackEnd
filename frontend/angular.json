@@ -24,7 +24,6 @@
             "browser": "src/main.ts",
             "outputPath": "dist/PROYECTO_BackEnd",
             "tsConfig": "tsconfig.app.json",
-
             "inlineStyleLanguage": "scss",
             "assets": [
               {
@@ -58,7 +57,17 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": true
+                },
+                "fonts": {
+                  "inline": false
+                }
+              }
             },
             "development": {
               "optimization": false,

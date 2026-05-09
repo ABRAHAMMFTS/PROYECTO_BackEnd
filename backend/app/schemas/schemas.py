@@ -187,6 +187,7 @@ class LoginResponse(BaseModel):
     token_type: str
     id_rol: int
     nomUsu: str
+    id_usuario: str
 
 class RolRead(BaseModel):
     id_rol: int

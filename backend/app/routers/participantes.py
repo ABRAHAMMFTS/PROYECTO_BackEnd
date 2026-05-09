@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.config.db import get_db
 from app.models.models import ParticipanteEvento
-from app.schemas.schemas import BaseModel
+from pydantic import BaseModel
+from typing import Optional
 import uuid
 
 router = APIRouter(prefix="/participantes", tags=["Participantes"])
@@ -10,7 +11,7 @@ router = APIRouter(prefix="/participantes", tags=["Participantes"])
 class ParticipanteCreate(BaseModel):
     id_evento: str
     id_usuario: str
-    id_equipo: str = None
+    id_equipo: Optional[str] = None
 
 @router.post("/")
 def inscribir_usuario(datos: ParticipanteCreate, db: Session = Depends(get_db)):

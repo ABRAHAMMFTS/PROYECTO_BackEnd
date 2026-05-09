@@ -152,7 +152,7 @@
               <span class="tag">{{ selectedEvento()?.deporte }}</span>
             </div>
             <div class="modal-actions">
-              <button class="btn-primary" (click)="reservarCupo(selectedEvento()?.id)">Reservar cupo</button>
+              <button class="btn-primary" (click)="reservarCupo(selectedEvento()?.id ?? null)">Reservar cupo</button>
               <button class="btn-secondary">Guardar</button>
             </div>
 

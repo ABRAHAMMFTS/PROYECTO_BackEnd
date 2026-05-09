@@ -4,6 +4,18 @@ import { FormsModule } from '@angular/forms';
 import { isPlatformBrowser } from '@angular/common';
 import { ApiService, Evento } from './services/api.service';
 
+interface PerfilUsuario {
+  username: string;
+  edad: number;
+  municipio: string;
+  genero: string;
+  instagram_url: string;
+  tiktok_url: string;
+  nombre_equipo: string;
+  id_rol: number;
+  id_usuario?: string;
+}
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -46,7 +58,7 @@ export class App implements OnInit, OnDestroy {
 
   // Perfil
   activeTab = signal('Reservas');
-  perfilUsuario = signal({
+  perfilUsuario = signal<PerfilUsuario>({
     username: 'cargando...',
     edad: 0,
     municipio: '...',
@@ -164,7 +176,6 @@ export class App implements OnInit, OnDestroy {
         alert('Bienvenido de nuevo, ' + res.nomUsu);
         this.showLogin.set(false);
         // Guardar ID, nombre y rol en el perfil
-        const isAdmin = res.id_rol === 1;
         this.perfilUsuario.update(p => ({ 
           ...p, 
           username: res.nomUsu, 
@@ -182,7 +193,12 @@ export class App implements OnInit, OnDestroy {
     });
   }
 
-  reservarCupo(id_evento: string) {
+  reservarCupo(id_evento: string | number | null) {
+    if (id_evento === null) {
+      alert('No se pudo identificar el evento seleccionado');
+      return;
+    }
+
     const id_usuario = localStorage.getItem('id_usuario');
     if (!id_usuario) {
       alert('Debes iniciar sesión para reservar un cupo');
@@ -190,7 +206,7 @@ export class App implements OnInit, OnDestroy {
       return;
     }
 
-    this.apiService.inscribirEnEvento(id_evento, id_usuario).subscribe({
+    this.apiService.inscribirEnEvento(String(id_evento), id_usuario).subscribe({
       next: () => {
         alert('¡Cupo reservado con éxito!');
         this.cerrarModal();
@@ -267,7 +283,9 @@ export class App implements OnInit, OnDestroy {
             genero: user.sexo === 'femenino' ? '♀' : '♂',
             instagram_url: '',
             tiktok_url: '',
-            nombre_equipo: ''
+            nombre_equipo: '',
+            id_rol: user.id_rol || 0,
+            id_usuario: user.id_usuario
           });
           this.cdr.detectChanges();
         }
@@ -280,7 +298,8 @@ export class App implements OnInit, OnDestroy {
           genero: '♂',
           instagram_url: '',
           tiktok_url: '',
-          nombre_equipo: 'Equipo Bolívar'
+          nombre_equipo: 'Equipo Bolívar',
+          id_rol: 2
         });
       }
     });

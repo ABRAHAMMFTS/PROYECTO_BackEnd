@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.config.db import get_db
 from app.models.models import Usuario
+from app.config.security import create_access_token
 from app.schemas.schemas import UsuarioCreate, UsuarioRead, LoginRequest, LoginResponse
 import uuid
 from datetime import date
@@ -57,11 +58,14 @@ def login(datos: LoginRequest, db: Session = Depends(get_db)):
     if not usuario or usuario.contrasenha != datos.contrasenha:
         raise HTTPException(status_code=401, detail="Correo o contraseña incorrectos")
 
+    token = create_access_token(data={"sub": usuario.id_usuario})
+
     return LoginResponse(
-        access_token="fake-jwt-token",
+        access_token=token,
         token_type="bearer",
-        id_rol=2,
-        nomUsu=usuario.nomUsu
+        id_rol=usuario.id_rol,
+        nomUsu=usuario.nomUsu,
+        id_usuario=usuario.id_usuario,
     )
 
 

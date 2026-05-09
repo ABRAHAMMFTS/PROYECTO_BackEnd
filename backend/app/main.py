@@ -13,6 +13,7 @@ app.add_middleware(
     allow_origins=[
         "https://sportpoint-jade.vercel.app",
         "https://sportpoint-1lwnolw8r-abrahammfts-projects.vercel.app",
+        "https://sportpoint-9dus55hvq-abrahammfts-projects.vercel.app"
         "http://localhost:4200",
         "http://localhost:4201",
         "http://127.0.0.1:4200",

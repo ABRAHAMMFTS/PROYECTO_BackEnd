@@ -96,23 +96,26 @@ class Evento(Base):
     __tablename__ = "evento"
 
     id_evento      = Column(String(20), primary_key=True)
-    nombre         = Column(String(20), nullable=False)
-    fecha_inicio   = Column(Date, nullable=False)
+    nomEve         = Column(String(20), nullable=False)
+    fecha_ini      = Column(Date, nullable=False)
+    fecha_fin      = Column(Date, nullable=False)
     descripcion    = Column(Text, nullable=False)
     id_deporte     = Column(String(50), ForeignKey("deporte.id_deporte"), nullable=False)
     id_instalacion = Column(String(20), ForeignKey("instalacion.id_instalacion"), nullable=False)
-    organizador    = Column(String(50), ForeignKey("usuario.id_usuario"), nullable=False)
+    id_usuario     = Column(String(50), ForeignKey("usuario.id_usuario"), nullable=False)
 
 
 class Reserva(Base):
     __tablename__ = "reserva"
 
-    id_reserva            = Column(String(20), primary_key=True)
-    id_usuario            = Column(String(50), ForeignKey("usuario.id_usuario"))
-    id_equipo             = Column(String(20), ForeignKey("equipo.id_equipo"))
-    id_instalacion        = Column(String(20), ForeignKey("instalacion.id_instalacion"), nullable=False)
-    id_horario_disponible = Column(String(20), ForeignKey("horarios.id_horario"), nullable=False)
-    fecha_r               = Column(Date, nullable=False)
+    id_reserva     = Column(String(20), primary_key=True)
+    fecha_resIni   = Column(DateTime, nullable=False)
+    fecha_resFin   = Column(DateTime, nullable=False)
+    id_usuario     = Column(String(50), ForeignKey("usuario.id_usuario"))
+    id_equipo      = Column(String(20), ForeignKey("equipo.id_equipo"))
+    id_instalacion = Column(String(20), ForeignKey("instalacion.id_instalacion"), nullable=False)
+    id_horario     = Column(String(20), ForeignKey("horarios.id_horario"), nullable=False)
+
 
 
 class Inscripcion(Base):

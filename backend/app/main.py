@@ -1,12 +1,18 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.config.db import engine, Base
+from app.models import models # Importar modelos para que Base los reconozca
 from app.routers import (
     usuarios, deporte, zona, instalacion,
     entrenador, horario, equipo, publicacion,
     evento, reserva, inscripcion
 )
 
+# Crear tablas en la base de datos (Supabase) si no existen
+Base.metadata.create_all(bind=engine)
+
 app = FastAPI(title="SportPoint API", version="1.0.0")
+
 
 app.add_middleware(
     CORSMiddleware,

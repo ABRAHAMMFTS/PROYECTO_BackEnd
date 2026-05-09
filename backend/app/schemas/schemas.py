@@ -129,12 +129,13 @@ class PublicacionRead(PublicacionBase):
 
 
 class EventoBase(BaseModel):
-    nombre:         str
-    fecha_inicio:   date
+    nomEve:         str
+    fecha_ini:      date
+    fecha_fin:      date
     descripcion:    str
     id_deporte:     str
     id_instalacion: str
-    organizador:    str
+    id_usuario:     str
 
 class EventoCreate(EventoBase):
     id_evento: str
@@ -146,11 +147,12 @@ class EventoRead(EventoBase):
 
 
 class ReservaBase(BaseModel):
-    id_usuario:            Optional[str] = None
-    id_equipo:             Optional[str] = None
-    id_instalacion:        str
-    id_horario_disponible: str
-    fecha_r:               date
+    id_usuario:     Optional[str] = None
+    id_equipo:      Optional[str] = None
+    id_instalacion: str
+    id_horario:     str
+    fecha_resIni:   datetime
+    fecha_resFin:   datetime
 
 class ReservaCreate(ReservaBase):
     id_reserva: str
@@ -159,6 +161,7 @@ class ReservaRead(ReservaBase):
     id_reserva: str
     class Config:
         from_attributes = True
+
 
 
 

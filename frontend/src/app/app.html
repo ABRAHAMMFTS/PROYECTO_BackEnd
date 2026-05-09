@@ -12,10 +12,17 @@
         <li><a href="#" (click)="changeSection('Perfil'); $event.preventDefault()" [class.active]="activeSection() === 'Perfil'">Mi Perfil</a></li>
       </ul>
     </nav>
-    <div class="button-container">
+    <div class="button-container" *ngIf="!isAuthenticated(); else loggedActions">
       <button id="showformLogin" type="button" (click)="toggleLogin()">Iniciar Sesión</button>
       <button id="showformSignup" type="button" (click)="toggleSignup()">Crear Cuenta</button>
     </div>
+    <ng-template #loggedActions>
+      <div class="button-container session-actions">
+        <span class="session-user">Hola, {{ perfilUsuario().username }}</span>
+        <button id="logoutButton" type="button" (click)="cerrarSesion()">Cerrar sesión</button>
+      </div>
+    </ng-template>
+
   </header>
 
   <main>
@@ -140,25 +147,37 @@
       </div>
 
       <!-- Modal de evento -->
-      <div class="overlay open" *ngIf="showModal()" (click)="cerrarModal()">
-        <button class="modal-close" (click)="cerrarOverlay()">✕</button>
-        <div class="modal" (click)="$event.stopPropagation()">
-          <div class="modal-img" id="modal-img"></div>
-          <div class="modal-body">
+      <div class="overlay open event-modal-overlay" *ngIf="showModal()" (click)="cerrarModal()">
+        <div class="event-modal-bg" [style.background-image]="'url(' + imagenEvento(selectedEvento()) + ')'"></div>
+        <button class="modal-close" type="button" (click)="cerrarModal(); $event.stopPropagation()">✕</button>
+        <div class="modal event-modal" (click)="$event.stopPropagation()">
+          <div class="modal-img event-modal-img">
+            <img [src]="imagenEvento(selectedEvento())" [alt]="selectedEvento()?.deporte || 'Evento deportivo'">
+          </div>
+          <div class="modal-body event-modal-body">
+            <span class="event-modal-kicker">{{ selectedEvento()?.deporte }}</span>
             <div class="modal-titulo">{{ selectedEvento()?.nombre }}</div>
-            <div class="modal-meta">{{ selectedEvento()?.fecha }} · {{ selectedEvento()?.hora }} · {{ selectedEvento()?.municipio }}</div>
+            <div class="modal-meta">
+              <span>{{ selectedEvento()?.fecha }}</span>
+              <span>{{ selectedEvento()?.hora }}</span>
+              <span>{{ selectedEvento()?.municipio }}</span>
+            </div>
             <div class="modal-desc">{{ selectedEvento()?.descripcion }}</div>
             <div class="modal-tags">
               <span class="tag">{{ selectedEvento()?.deporte }}</span>
+              <span class="tag">Cupos disponibles</span>
+              <span class="tag" *ngIf="eventoGuardado(selectedEvento()?.id)">Guardado</span>
             </div>
             <div class="modal-actions">
-              <button class="btn-primary" (click)="reservarCupo(selectedEvento()?.id ?? null)">Reservar cupo</button>
-              <button class="btn-secondary">Guardar</button>
+              <button class="btn-primary" type="button" (click)="reservarCupo(selectedEvento()?.id ?? null)">Reservar cupo</button>
+              <button class="btn-secondary" type="button" (click)="guardarEvento(selectedEvento()?.id ?? null)">
+                {{ eventoGuardado(selectedEvento()?.id) ? 'Guardado' : 'Guardar' }}
+              </button>
             </div>
-
           </div>
         </div>
       </div>
+
     </section>
 
     <!-- ===== ESPACIOS ===== -->
@@ -232,7 +251,8 @@
         <div class="inst-card" *ngFor="let inst of instalaciones()">
           <div class="inst-icon">🏛️</div>
           <div class="inst-info">
-            <h3>{{ inst.nombre }}</h3>
+            <h3>{{ inst.nomInst || inst.nombre }}</h3>
+
             <p>Ubicación: {{ inst.id_zona }}</p>
           </div>
           <button class="btn-reservar">Ver detalles</button>
@@ -322,9 +342,23 @@
             <button class="tab" [class.active]="activeTab() === 'Favoritos'" (click)="changeTab('Favoritos')">Mis Favoritos</button>
           </div>
           <div class="tab-content">
-            <div *ngIf="activeTab() === 'Reservas'">Aquí irá el contenido de Mis Reservas...</div>
-            <div *ngIf="activeTab() === 'Eventos'">Aquí irá el contenido de Mis Eventos...</div>
-            <div *ngIf="activeTab() === 'Favoritos'">Aquí irá el contenido de Mis Favoritos...</div>
+            <div *ngIf="activeTab() === 'Reservas'">
+              Tus reservas aparecerán aquí después de confirmar cupos en eventos.
+            </div>
+            <div *ngIf="activeTab() === 'Eventos'">
+              Consulta los eventos en los que participas desde el panel de administrador.
+            </div>
+            <div *ngIf="activeTab() === 'Favoritos'" class="favoritos-list">
+              <div *ngIf="eventosGuardados.length === 0">Aún no tienes eventos guardados.</div>
+              <div class="favorito-item" *ngFor="let evento of eventosGuardados" (click)="abrirModal(evento)">
+                <img [src]="imagenEvento(evento)" [alt]="evento.deporte">
+                <div>
+                  <strong>{{ evento.nombre }}</strong>
+                  <span>{{ evento.deporte }} · {{ evento.fecha }}</span>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>

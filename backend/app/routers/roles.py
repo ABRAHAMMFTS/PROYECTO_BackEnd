@@ -1,38 +1,35 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+
 from app.config.db import get_db
-from app.config.security import verify_password, create_access_token, get_current_user
-from app.models.models import Usuario
-from app.schemas.schemas import LoginRequest, LoginResponse
+from app.config.security import require_admin
+from app.models.models import Rol, Usuario
+from app.schemas.schemas import RolRead
 
-router = APIRouter(prefix="/auth", tags=["Auth"])
+router = APIRouter(prefix="/roles", tags=["Roles"])
 
 
-@router.post("/login", response_model=LoginResponse)
-def login(datos: LoginRequest, db: Session = Depends(get_db)):
-    usuario = db.query(Usuario).filter(Usuario.correo == datos.correo).first()
+@router.get("/", response_model=list[RolRead])
+def listar_roles(db: Session = Depends(get_db)):
+    return db.query(Rol).all()
 
+
+@router.put("/usuario/{id_usuario}")
+def cambiar_rol_usuario(
+    id_usuario: str,
+    id_rol: int,
+    db: Session = Depends(get_db),
+    _admin: Usuario = Depends(require_admin),
+):
+    usuario = db.query(Usuario).filter(Usuario.id_usuario == id_usuario).first()
     if not usuario:
-        raise HTTPException(status_code=401, detail="Correo o contraseña incorrectos")
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
 
-    if not verify_password(datos.contrasenha, usuario.contrasenha):
-        raise HTTPException(status_code=401, detail="Correo o contraseña incorrectos")
+    rol = db.query(Rol).filter(Rol.id_rol == id_rol).first()
+    if not rol:
+        raise HTTPException(status_code=404, detail="Rol no encontrado")
 
-    token = create_access_token(data={"sub": usuario.id_usuario})
-
-    return {
-        "access_token": token,
-        "token_type": "bearer",
-        "id_rol": usuario.id_rol,
-        "nomUsu": usuario.nomUsu
-    }
-
-
-@router.get("/me")
-def me(current_user: Usuario = Depends(get_current_user)):
-    return {
-        "id_usuario": current_user.id_usuario,
-        "nomUsu": current_user.nomUsu,
-        "correo": current_user.correo,
-        "id_rol": current_user.id_rol
-    }
+    usuario.id_rol = id_rol
+    db.commit()
+    db.refresh(usuario)
+    return {"mensaje": "Rol actualizado correctamente", "id_usuario": id_usuario, "id_rol": id_rol}

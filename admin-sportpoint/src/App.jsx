@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard';
 import Usuarios from './pages/Usuarios';
 import Eventos from './pages/Eventos';
 import Reservas from './pages/Reservas';
+import Participantes from './pages/Participantes';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
           <Route path="/usuarios" element={<Usuarios />} />
           <Route path="/eventos" element={<Eventos />} />
           <Route path="/reservas" element={<Reservas />} />
+          <Route path="/participantes" element={<Participantes />} />
         </Route>
       </Routes>
     </BrowserRouter>

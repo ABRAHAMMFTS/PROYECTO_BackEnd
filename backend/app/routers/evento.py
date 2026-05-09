@@ -24,13 +24,14 @@ def obtener_evento(id_evento: str, db: Session = Depends(get_db)):
 @router.post("/", response_model=EventoRead)
 def crear_evento(datos: EventoCreate, db: Session = Depends(get_db)):
     nuevo = Evento(
-        id_evento      = str(uuid.uuid4())[:20],
-        nombre         = datos.nombre,
+        id_evento      = datos.id_evento or str(uuid.uuid4())[:20],
+        nomEve         = datos.nomEve,
+        fecha_ini      = datos.fecha_ini,
+        fecha_fin      = datos.fecha_fin,
+        descripcion    = datos.descripcion,
         id_deporte     = datos.id_deporte,
-        fecha_inicio   = datos.fecha_inicio,
         id_instalacion = datos.id_instalacion,
-        organizador    = datos.organizador,
-        descripcion    = datos.descripcion
+        id_usuario     = datos.id_usuario
     )
     db.add(nuevo)
     db.commit()
@@ -43,12 +44,13 @@ def actualizar_evento(id_evento: str, datos: EventoCreate, db: Session = Depends
     evento = db.query(Evento).filter(Evento.id_evento == id_evento).first()
     if not evento:
         raise HTTPException(status_code=404, detail="Evento no encontrado")
-    evento.nombre         = datos.nombre
-    evento.id_deporte     = datos.id_deporte
-    evento.fecha_inicio   = datos.fecha_inicio
-    evento.id_instalacion = datos.id_instalacion
-    evento.organizador    = datos.organizador
+    evento.nomEve         = datos.nomEve
+    evento.fecha_ini      = datos.fecha_ini
+    evento.fecha_fin      = datos.fecha_fin
     evento.descripcion    = datos.descripcion
+    evento.id_deporte     = datos.id_deporte
+    evento.id_instalacion = datos.id_instalacion
+    evento.id_usuario     = datos.id_usuario
     db.commit()
     db.refresh(evento)
     return evento

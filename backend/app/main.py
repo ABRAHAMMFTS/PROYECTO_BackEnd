@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config.db import Base, engine
+from app.seed_data import seed_demo_data
 
 # IMPORTANTE:
 # importar modelos para que SQLAlchemy registre las tablas
@@ -9,13 +10,14 @@ from app.models.models import *
 from app.routers import (
     usuarios, deporte, zona, instalacion,
     entrenador, horario, equipo, publicacion,
-    evento, reserva, inscripcion, auth, participantes
+    evento, reserva, inscripcion, auth, participantes, roles
 )
 
 app = FastAPI(title="SportPoint API", version="1.0.0")
 
 # Crear tablas automáticamente
-Base.metadata.create_all(bind=engine)
+if engine:
+    Base.metadata.create_all(bind=engine)
 
 app.add_middleware(
     CORSMiddleware,
@@ -38,3 +40,9 @@ app.include_router(evento.router)
 app.include_router(reserva.router)
 app.include_router(inscripcion.router)
 app.include_router(participantes.router)
+app.include_router(roles.router)
+
+
+@app.on_event("startup")
+def cargar_datos_demo():
+    seed_demo_data()

@@ -36,6 +36,8 @@ export class App implements OnInit, OnDestroy {
   showSignup = signal(false);
   showModal = signal(false);
   selectedEvento = signal<Evento | null>(null);
+  isAuthenticated = signal(false);
+  savedEventIds = signal<string[]>([]);
 
   // Carrusel de imágenes hero
   slides = signal([
@@ -110,6 +112,7 @@ export class App implements OnInit, OnDestroy {
   ngOnInit() {
     this.iniciarCarrusel();
     if (isPlatformBrowser(this.platformId)) {
+      this.cargarSesionDesdeStorage();
       this.cargarTodo();
       this.animarStats();
     }
@@ -120,6 +123,23 @@ export class App implements OnInit, OnDestroy {
   }
 
   // Carga global de datos
+  private cargarSesionDesdeStorage() {
+    const idUsuario = localStorage.getItem('id_usuario');
+    const nomUsu = localStorage.getItem('nomUsu');
+    const idRol = Number(localStorage.getItem('id_rol') || 0);
+    this.isAuthenticated.set(Boolean(idUsuario));
+    this.savedEventIds.set(JSON.parse(localStorage.getItem('eventos_guardados') || '[]'));
+
+    if (idUsuario) {
+      this.perfilUsuario.update((perfil) => ({
+        ...perfil,
+        username: nomUsu || perfil.username,
+        id_usuario: idUsuario,
+        id_rol: idRol,
+      }));
+    }
+  }
+
   private cargarTodo() {
     this.cargarEventos();
     this.cargarInstalaciones();
@@ -155,13 +175,37 @@ export class App implements OnInit, OnDestroy {
     this.showSignup.set(false);
     this.filtrosAbiertos.set(false);
   }
+
+  cerrarSesion() {
+    localStorage.removeItem('id_usuario');
+    localStorage.removeItem('id_rol');
+    localStorage.removeItem('nomUsu');
+    localStorage.removeItem('eventos_guardados');
+    this.isAuthenticated.set(false);
+    this.savedEventIds.set([]);
+    this.perfilUsuario.set({
+      username: 'Invitado',
+      edad: 0,
+      municipio: '...',
+      genero: '...',
+      instagram_url: '',
+      tiktok_url: '',
+      nombre_equipo: '',
+      id_rol: 0
+    });
+    this.changeSection('Inicio');
+  }
   crearCuenta(event: Event) {
     event.preventDefault();
     this.apiService.createResource('usuarios', this.signupData).subscribe({
       next: () => {
-        alert('Cuenta creada exitosamente. Ahora puedes iniciar sesión.');
+        alert('Cuenta creada exitosamente. Iniciando sesión...');
         this.showSignup.set(false);
-        this.showLogin.set(true);
+        this.loginData = {
+          correo: this.signupData.correo,
+          contrasenha: this.signupData.contrasenha
+        };
+        this.iniciarSesionSinEvento();
       },
       error: (err) => {
         alert('Error al crear cuenta: ' + (err.error?.detail || 'Inténtalo de nuevo'));
@@ -171,6 +215,10 @@ export class App implements OnInit, OnDestroy {
 
   iniciarSesion(event: Event) {
     event.preventDefault();
+    this.iniciarSesionSinEvento();
+  }
+
+  private iniciarSesionSinEvento() {
     this.apiService.login(this.loginData).subscribe({
       next: (res) => {
         alert('Bienvenido de nuevo, ' + res.nomUsu);
@@ -184,6 +232,8 @@ export class App implements OnInit, OnDestroy {
         }));
         localStorage.setItem('id_usuario', res.id_usuario);
         localStorage.setItem('id_rol', res.id_rol.toString());
+        localStorage.setItem('nomUsu', res.nomUsu);
+        this.isAuthenticated.set(true);
 
         this.changeSection('Perfil');
       },
@@ -217,6 +267,41 @@ export class App implements OnInit, OnDestroy {
     });
   }
 
+  guardarEvento(id_evento: string | number | null) {
+    if (id_evento === null) {
+      alert('No se pudo identificar el evento seleccionado');
+      return;
+    }
+
+    if (!this.isAuthenticated()) {
+      alert('Debes iniciar sesión para guardar eventos');
+      this.showLogin.set(true);
+      return;
+    }
+
+    const id = String(id_evento);
+    const guardados = this.savedEventIds();
+    if (guardados.includes(id)) {
+      alert('Este evento ya está guardado');
+      return;
+    }
+
+    const nuevosGuardados = [...guardados, id];
+    this.savedEventIds.set(nuevosGuardados);
+    localStorage.setItem('eventos_guardados', JSON.stringify(nuevosGuardados));
+    alert('Evento guardado en favoritos');
+  }
+
+  eventoGuardado(id_evento: string | number | null | undefined): boolean {
+    if (id_evento === null || id_evento === undefined) return false;
+    return this.savedEventIds().includes(String(id_evento));
+  }
+
+  imagenEvento(evento: Evento | null | undefined): string {
+    if (!evento) return 'assets/img/logo_color.png';
+    return this.imagenesDeporte[evento.deporte] || 'assets/img/logo_color.png';
+  }
+
 
 
   // Cargar eventos
@@ -234,18 +319,16 @@ export class App implements OnInit, OnDestroy {
 
   private cargarEventosFallback() {
     const fallbackData: Evento[] = [
-      { id: 1, nombre: "Torneo Barrial", descripcion: "Liga local de fútbol en fase eliminatoria.", deporte: "Fútbol", fecha: "2026-05-10", hora: "16:00", municipio: "Cartagena" },
-      { id: 2, nombre: "Basketball Cup", descripcion: "Campeonato juvenil categoría 14-18 años.", deporte: "Baloncesto", fecha: "2026-05-12", hora: "18:00", municipio: "Cartagena" },
-      { id: 3, nombre: "Nado Libre", descripcion: "Competencia en piscina olímpica.", deporte: "Natación", fecha: "2026-05-15", hora: "10:00", municipio: "Cartagena" },
-      { id: 4, nombre: "Torneo Universitario", descripcion: "UTB vs UDC - Gran Final.", deporte: "Softbol", fecha: "2026-04-28", hora: "16:00", municipio: "Cartagena" },
-      { id: 5, nombre: "Femenina Bolivarense", descripcion: "Selecciones Sub-20 en competencia.", deporte: "Voleibol", fecha: "2026-05-01", hora: "08:00", municipio: "Cartagena" },
-      { id: 6, nombre: "Amateur Peso Pluma", descripcion: "Velada de boxeo aficionado.", deporte: "Boxeo", fecha: "2026-05-04", hora: "18:00", municipio: "Cartagena" },
-      { id: 7, nombre: "Carrera 10K", descripcion: "Running urbano por las calles.", deporte: "Running", fecha: "2026-05-20", hora: "06:00", municipio: "Turbaco" },
-      { id: 8, nombre: "Copa Tenis", descripcion: "Torneo abierto nivel aficionado.", deporte: "Tenis", fecha: "2026-05-18", hora: "09:00", municipio: "Cartagena" },
-      { id: 9, nombre: "Ciclismo Ruta", descripcion: "Competencia regional de ruta.", deporte: "Ciclismo", fecha: "2026-05-25", hora: "07:00", municipio: "Turbaco" },
-      { id: 10, nombre: "Calistenia Park", descripcion: "Exhibición urbana y competencia.", deporte: "Calistenia", fecha: "2026-05-22", hora: "17:00", municipio: "Cartagena" },
-      { id: 11, nombre: "Halterofilia Open", descripcion: "Competencia de fuerza máxima.", deporte: "Halterofilia", fecha: "2026-05-28", hora: "15:00", municipio: "Cartagena" },
-      { id: 12, nombre: "Boxeo Amateur", descripcion: "Velada deportiva comunitaria.", deporte: "Boxeo", fecha: "2026-05-30", hora: "19:00", municipio: "Magangue" }
+      { id: 'E1', nombre: 'Torneo Barrial', descripcion: 'Liga local de fútbol en fase eliminatoria.', deporte: 'Fútbol', fecha: '2026-05-10', hora: '16:00', municipio: 'Cartagena' },
+      { id: 'E2', nombre: 'Basketball Cup', descripcion: 'Campeonato juvenil categoría 14-18 años.', deporte: 'Baloncesto', fecha: '2026-05-12', hora: '18:00', municipio: 'Cartagena' },
+      { id: 'E3', nombre: 'Nado Libre', descripcion: 'Competencia en piscina olímpica.', deporte: 'Natación', fecha: '2026-05-15', hora: '10:00', municipio: 'Cartagena' },
+      { id: 'E4', nombre: 'Torneo Softbol', descripcion: 'Gran final universitaria UTB vs UDC.', deporte: 'Softbol', fecha: '2026-05-16', hora: '16:00', municipio: 'Cartagena' },
+      { id: 'E5', nombre: 'Copa Voleibol', descripcion: 'Selecciones Sub-20 en competencia regional.', deporte: 'Voleibol', fecha: '2026-05-17', hora: '08:00', municipio: 'Cartagena' },
+      { id: 'E6', nombre: 'Boxeo Amateur', descripcion: 'Velada deportiva de peso pluma.', deporte: 'Boxeo', fecha: '2026-05-19', hora: '18:00', municipio: 'Cartagena' },
+      { id: 'E7', nombre: 'Copa Tenis', descripcion: 'Torneo abierto nivel aficionado con llaves mixtas.', deporte: 'Tenis', fecha: '2026-05-21', hora: '09:00', municipio: 'Cartagena' },
+      { id: 'E8', nombre: 'Ruta Ciclismo', descripcion: 'Recorrido competitivo por la zona norte de Bolívar.', deporte: 'Ciclismo', fecha: '2026-05-24', hora: '07:00', municipio: 'Turbaco' },
+      { id: 'E9', nombre: 'Reto Calistenia', descripcion: 'Competencia urbana de fuerza, resistencia y freestyle.', deporte: 'Calistenia', fecha: '2026-05-27', hora: '17:00', municipio: 'Cartagena' },
+      { id: 'E10', nombre: 'Open Halterofilia', descripcion: 'Pruebas de levantamiento olímpico por categorías.', deporte: 'Halterofilia', fecha: '2026-05-30', hora: '15:00', municipio: 'Cartagena' }
     ];
     this.eventosCercanos.set(fallbackData.filter(ev => ev.municipio === 'Cartagena'));
     const hoy = new Date(); hoy.setHours(0,0,0,0);
@@ -275,12 +358,15 @@ export class App implements OnInit, OnDestroy {
     this.apiService.getUsuarios().subscribe({
       next: (users) => {
         if (users && users.length > 0) {
-          const user = users[0] as any;
+          const idUsuario = localStorage.getItem('id_usuario');
+          const user = (users as any[]).find((item) => item.id_usuario === idUsuario) || (!this.isAuthenticated() ? users[0] : null);
+          if (!user) return;
+
           this.perfilUsuario.set({
             username: user.nomUsu || 'usuario',
             edad: user.edad || 0,
             municipio: user.municipio || 'Cartagena',
-            genero: user.sexo === 'femenino' ? '♀' : '♂',
+            genero: user.sexo === 'F' || user.sexo === 'femenino' ? '♀' : '♂',
             instagram_url: '',
             tiktok_url: '',
             nombre_equipo: '',
@@ -323,6 +409,13 @@ export class App implements OnInit, OnDestroy {
   limpiar() { this.filtrosSeleccionados.set([]); }
   buscar() { this.filtrosAbiertos.set(false); }
   changeTab(tab: string) { this.activeTab.set(tab); }
+
+  get eventosGuardados() {
+    const ids = this.savedEventIds();
+    return this.eventosProximos().concat(this.eventosCercanos()).filter((evento, index, arr) =>
+      ids.includes(String(evento.id)) && arr.findIndex((item) => String(item.id) === String(evento.id)) === index
+    );
+  }
 
   private animarStats() {
     const targets = { eventos: 24, espacios: 57, municipios: 45 };

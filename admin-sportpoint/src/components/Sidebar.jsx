@@ -20,6 +20,7 @@ function Sidebar() {
         <NavLink to="/usuarios">👥 Usuarios</NavLink>
         <NavLink to="/eventos">🏆 Eventos</NavLink>
         <NavLink to="/reservas">📅 Reservas</NavLink>
+        <NavLink to="/participantes">🙋 Participantes</NavLink>
       </nav>
 
       <div className="sidebar-footer">
